@@ -38,6 +38,7 @@ public class CifrarMensagem {
 					System.out.print("Digite a mensagem que sera cifrada: ");
 					mensagemDescriptografada = sc.nextLine().toUpperCase();
 					mensagemEncriptografa = criptografaMensagem(mensagemDescriptografada);
+					System.out.println(mensagemEncriptografa);
 					break;
 
 				case VER_MENSAGEM_CIFRADA:
@@ -67,8 +68,7 @@ public class CifrarMensagem {
 					mostrarMenuDeOpcoes();
 					break;
 			}
-			
-			System.out.println("");
+			System.out.println();
 		}
 		
 		sc.close();
@@ -116,11 +116,27 @@ public class CifrarMensagem {
 	}
 
 	public static String criptografaMensagem(String mensagemDescriptografada) {
-		String mensagemEncriptografada = preparaMensagem(mensagemDescriptografada);
+		String mensagemCriptografada = "", primeiraLetra, segundaLetra;
+		String mensagemPreparada = preparaMensagem(mensagemDescriptografada);
 
-		return mensagemEncriptografada;
+		for (int i = 0; i < mensagemPreparada.length(); i+=3) {
+			primeiraLetra = String.valueOf(mensagemPreparada.charAt(i));
+			segundaLetra = String.valueOf(mensagemPreparada.charAt(i+1));
+			
+			if (estaNaMesmaLinha(primeiraLetra, segundaLetra)) {
+				mensagemCriptografada += letraDaDireita(primeiraLetra);
+				mensagemCriptografada += letraDaDireita(segundaLetra);
+			} else if (estaNaMesmaColuna(primeiraLetra, segundaLetra)) {
+				mensagemCriptografada += letraDeBaixo(primeiraLetra);
+				mensagemCriptografada += letraDeBaixo(segundaLetra);
+			} else {
+				
+			}
+		}
+		
+		return mensagemPreparada;
 	}
-	
+
 	public static String preparaMensagem(String mensagem) {
 		String mensagemPreparada = "";
 		
@@ -151,21 +167,48 @@ public class CifrarMensagem {
 		return phrase;
 	}
 
-	// Metodo para verificar se as duas letras estao na mesma linha
-	private boolean estaNaMesmaLinha(String primeiraLetra, String segundaLetra) {
+	private static boolean estaNaMesmaLinha(String primeiraLetra, String segundaLetra) {
 		int linha = getLinhaNaMatriz(primeiraLetra);
 		
-		for (int i = 0; i < tabela.length; i++) {
-			if (tabela[linha][i].equalsIgnoreCase(segundaLetra)){
+		int coluna = 0;
+		
+		while (coluna < tabela.length) {
+			if (tabela[linha][coluna].equalsIgnoreCase(segundaLetra)){
 				return true;
 			}
+			
+			coluna++;
 		}
 
 		return false;
 	}
 	
+	private static boolean estaNaMesmaColuna(String primeiraLetra, String segundaLetra) {
+		int coluna = getColunaNaMatriz(primeiraLetra);
+		
+		int linha = 0;
+		
+		while (linha < tabela.length) {
+			if (tabela[linha][coluna].equalsIgnoreCase(segundaLetra)){
+				return true;
+			}
+			
+			linha++;
+		}
+
+		return false;
+	}
 	
-	private int getLinhaNaMatriz(String letra) {
+	private static String letraDaDireita(String letra) {
+		return null;
+	}
+	
+	private static String letraDeBaixo(String letra) {
+		return null;
+	}
+	
+	
+	private static int getLinhaNaMatriz(String letra) {
 		boolean encontrada = false;
 		int linha = 0, coluna = 0;
 		
@@ -174,15 +217,18 @@ public class CifrarMensagem {
 				if (tabela[linha][coluna].equalsIgnoreCase(letra)) {
 					encontrada = true;
 				}
-				coluna++;
+				if (!encontrada) coluna++;
 			}
-			linha++;
+			if (!encontrada) {
+				linha++;
+				coluna = 0;
+			}
 		}
 		
 		return linha;
 	}
 	
-	private int getColunaNaMatriz(String letra) {
+	private static int getColunaNaMatriz(String letra) {
 		boolean encontrada = false;
 		int linha = 0, coluna = 0;
 		
@@ -191,9 +237,12 @@ public class CifrarMensagem {
 				if (tabela[linha][coluna].equalsIgnoreCase(letra)) {
 					encontrada = true;
 				}
-				coluna++;
+				if (!encontrada) coluna++;
 			}
-			linha++;
+			if (!encontrada) {
+				linha++;
+				coluna = 0;
+			}
 		}
 		
 		return coluna;
