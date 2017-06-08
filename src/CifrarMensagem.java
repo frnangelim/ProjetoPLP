@@ -36,8 +36,8 @@ public class CifrarMensagem {
 					
 				case CIFRAR_MENSAGEM:
 					System.out.print("Digite a mensagem que sera cifrada: ");
-					mensagemDescriptografada = sc.nextLine();
-					mensagemEncriptografa = criptografarMensagem(mensagemDescriptografada);
+					mensagemDescriptografada = sc.nextLine().toUpperCase();
+					mensagemEncriptografa = criptografaMensagem(mensagemDescriptografada);
 					break;
 
 				case VER_MENSAGEM_CIFRADA:
@@ -48,7 +48,6 @@ public class CifrarMensagem {
 				case DECIFRAR_MENSAGEM:
 					System.out.print("Essa eh a sua mensagem original: ");
 					System.out.print(mensagemDescriptografada);
-					// TODO
 					break;
 					
 				case VER_ALFABETO:
@@ -116,6 +115,31 @@ public class CifrarMensagem {
 		return novaTabela;
 	}
 
+	public static String criptografaMensagem(String mensagemDescriptografada) {
+		String mensagemEncriptografada = preparaMensagem(mensagemDescriptografada);
+
+		return mensagemEncriptografada;
+	}
+	
+	public static String preparaMensagem(String mensagem) {
+		String mensagemPreparada = "";
+		
+		mensagem = removeCaracteresInvalidos(mensagem);
+
+		for (int i = 0; i < mensagem.length(); i++) {
+			mensagemPreparada += String.valueOf(mensagem.charAt(i));
+			
+			if (i == (mensagem.length()-1) || mensagem.charAt(i) == mensagem.charAt(i+1)) {
+				mensagemPreparada += "X ";
+			} else {
+				mensagemPreparada += String.valueOf(mensagem.charAt(i+1)) + " ";
+				i++;
+			}
+		}
+		
+		return mensagemPreparada.trim();
+	}
+	
 	private static String removeCaracteresInvalidos(String phrase) {
 		phrase.trim();
 		phrase = phrase.replaceAll(",", "");
@@ -125,40 +149,6 @@ public class CifrarMensagem {
 		phrase = phrase.replaceAll("\\?", "");
 		
 		return phrase;
-	}
-
-	public static String criptografarMensagem(String mensagemDescriptografada) {
-		String mensagemEncriptografada = makePhraseToEncrypt(mensagemDescriptografada);
-
-		return null;
-	}
-	
-	public static String makePhraseToEncrypt(String phrase) {
-		// Remocao o de espacos e pontuacoes.
-		phrase = removeCaracteresInvalidos(phrase);
-
-		String[] newPhrase = phrase.split("");
-
-		ArrayList<String> mPhrase = new ArrayList<>();
-		// Copia em ArrayList
-		for (int i = 0; i < newPhrase.length; i++) {
-			mPhrase.add(newPhrase[i]);
-		}
-
-		for (int i = 0; i < mPhrase.size(); i+=2) {
-			// Se a ultima letra sobrar. Exemplo: Iae oi --> IA EO IX
-			if (i == mPhrase.size() - 1 && mPhrase.size() % 2 != 0) {
-				mPhrase.add("X");
-				i++;
-				
-			// Se dois caracteres forem iguais. Exemplo: Iaae --> IA XE
-			} else if (i < mPhrase.size() - 1 && mPhrase.get(i).equals(mPhrase.get(i + 1))) {
-				mPhrase.add(i + 1, "X");
-				i++;
-			}
-		}
-		
-		return mPhrase.toString();
 	}
 
 	// Metodo para verificar se as duas letras estao na mesma linha
@@ -175,7 +165,6 @@ public class CifrarMensagem {
 	}
 	
 	
-	// Metodo para encontrar a letra na matriz, retornando a linha que o mesmo se encontra
 	private int getLinhaNaMatriz(String letra) {
 		boolean encontrada = false;
 		int linha = 0, coluna = 0;
@@ -191,7 +180,22 @@ public class CifrarMensagem {
 		}
 		
 		return linha;
-
 	}
 	
+	private int getColunaNaMatriz(String letra) {
+		boolean encontrada = false;
+		int linha = 0, coluna = 0;
+		
+		while (!encontrada && linha < tabela.length) {
+			while (!encontrada && coluna < tabela.length) {
+				if (tabela[linha][coluna].equalsIgnoreCase(letra)) {
+					encontrada = true;
+				}
+				coluna++;
+			}
+			linha++;
+		}
+		
+		return coluna;
+	}
 }
