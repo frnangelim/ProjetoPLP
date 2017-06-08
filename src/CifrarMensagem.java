@@ -11,151 +11,71 @@ public class CifrarMensagem {
 	public static final int VER_ALFABETO = 5;
 	public static final int TERMINAR = 6;
 
-	public static String[][] table;
+	public static String[][] tabela;
 
 	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		
+		tabela = gerarTabela();
 
-		Scanner reader = new Scanner(System.in);
-		table = generateTable();
+		String mensagemDescriptografada = "Voce ainda nao introduziu uma mensagem para cifrar.";
+		String mensagemEncriptografa = "Voce ainda nao introduziu uma mensagem para cifrar.";
 
-		String decryptedMessage = "Voce ainda nao introduziu uma mensagem para cifrar.";
-		String encryptedMessage = "Voce ainda nao introduziu uma mensagem para cifrar.";
+		int opcao = -1;
+		
+		while (opcao != TERMINAR) {
+			mostrarMenuDeOpcoes();
+			opcao = sc.nextInt();
+			sc.nextLine();
 
-		int option = -1;
-		while (option != 6) {
-			showMenu();
-			option = reader.nextInt();
-			reader.nextLine();
+			switch (opcao) {
+				case NOVA_CIFRA:
+					tabela = gerarTabela();
+					System.out.print("A tabela da cifra foi atualizada!");
+					break;
+					
+				case CIFRAR_MENSAGEM:
+					System.out.print("Digite a mensagem que sera cifrada: ");
+					mensagemDescriptografada = sc.nextLine();
+					mensagemEncriptografa = criptografarMensagem(mensagemDescriptografada);
+					break;
 
-			switch (option) {
-			case NOVA_CIFRA:
-				table = generateTable();
-				System.out.println("A tabela da cifra foi atualizada!");
-				break;
-			case CIFRAR_MENSAGEM:
-				System.out.print("Digite a mensagem que sera cifrada: ");
-				decryptedMessage = reader.nextLine();
-				ArrayList<String> phrase = makePhraseToEncrypt(decryptedMessage); // Mensagem
-																					// apenas
-																					// preparada
-																					// para
-																					// ser
-																					// encriptada
-
-				/*
-				 * Do jeito que tá atualmente vai ter um problema na hora de
-				 * encriptar, fiz a matriz com array normal, ai pra saber se
-				 * estão na mesma linha/coluna ou outras operações do tipo
-				 * não vai dar certo, tem que usar alguma outra estrutura. OU
-				 * Percorrer toda vez pra achar o elemento e comparar o I e J.
-				 */
-				// TODO
-				break;
-			case VER_MENSAGEM_CIFRADA:
-				System.out.print("Essa eh a sua mensagem cifrada: ");
-				System.out.println(encryptedMessage);
-				break;
-			case DECIFRAR_MENSAGEM:
-				System.out.print("Essa eh a sua mensagem original: ");
-				System.out.println(decryptedMessage);
-				// TODO
-				break;
-			case VER_ALFABETO:
-				System.out.println("Tabela da cifra: ");
-				for (int i = 0; i < 5; i++) {
-					for (int j = 0; j < 5; j++) {
-						if (j == 4) {
-							System.out.println(table[i][j]);
-						} else {
-							System.out.print(table[i][j]);
+				case VER_MENSAGEM_CIFRADA:
+					System.out.print("Essa eh a sua mensagem cifrada: ");
+					System.out.print(mensagemEncriptografa);
+					break;
+					
+				case DECIFRAR_MENSAGEM:
+					System.out.print("Essa eh a sua mensagem original: ");
+					System.out.print(mensagemDescriptografada);
+					// TODO
+					break;
+					
+				case VER_ALFABETO:
+					System.out.println("Tabela da cifra: ");
+					for (int i = 0; i < 5; i++) {
+						for (int j = 0; j < 5; j++) {
+								System.out.print(tabela[i][j]);
 						}
 					}
-				}
-				break;
-			case TERMINAR:
-				break;
-			default:
-				showMenu();
-				break;
+					System.out.println();
+					break;
+					
+				case TERMINAR:
+					break;
+					
+				default:
+					mostrarMenuDeOpcoes();
+					break;
 			}
+			
 			System.out.println("");
 		}
+		
+		sc.close();
 	}
 
-	public static String[][] generateTable() {
-
-		String alphabet = "ABCDEFGHIJKLMNOPQRSTUVXWZ";
-		String[] arrayAlphabet = alphabet.split("");
-
-		// Copia em ArrayList para usar o shuffle.
-		ArrayList<String> mAlphabet = new ArrayList<>();
-		for (int i = 0; i < arrayAlphabet.length; i++) {
-			mAlphabet.add(arrayAlphabet[i]);
-		}
-		Collections.shuffle(mAlphabet); // Embaralha o alfabeto para uma nova
-										// cifra.
-
-		// Monta a matriz a partir do alfabeto do ArrayList.
-		String[][] newTable = new String[5][5];
-		int letterCont = 0;
-
-		for (int i = 0; i < 5; i++) {
-			for (int j = 0; j < 5; j++) {
-				newTable[i][j] = mAlphabet.get(letterCont);
-				letterCont++;
-			}
-		}
-
-		return newTable;
-	}
-
-	public static ArrayList<String> makePhraseToEncrypt(String phrase) {
-		// Remoçã o de espaço e pontuações.
-		phrase = phrase.trim();
-		phrase = phrase.replaceAll(",", "");
-		phrase = phrase.replaceAll("\\.", "");
-		phrase = phrase.replaceAll(" ", "");
-		phrase = phrase.replaceAll("!", "");
-		phrase = phrase.replaceAll("\\?", "");
-
-		String[] newPhrase = phrase.split("");
-
-		ArrayList<String> mPhrase = new ArrayList<>();
-		// Cópia em ArrayList
-		for (int i = 0; i < newPhrase.length; i++) {
-			mPhrase.add(newPhrase[i]);
-		}
-
-		for (int i = 0; i < mPhrase.size(); i++) {
-			if (i == mPhrase.size() - 1 && mPhrase.size() % 2 != 0) { // Se a
-																		// última
-																		// letra
-																		// sobrar.
-																		// Exemplo
-																		// : Iae
-																		// oi --
-																		// > IA
-																		// EO IX
-				mPhrase.add("X");
-				i++;
-			} else if (i < mPhrase.size() - 1 && mPhrase.get(i).equals(mPhrase.get(i + 1))) { // Se
-																								// dois
-																								// caractéres
-																								// forem
-																								// iguais.
-																								// Exemplo:
-																								// Iaae
-																								// -->
-																								// IA
-																								// XE
-				mPhrase.add(i + 1, "X");
-				i++;
-			}
-		}
-		return mPhrase;
-	}
-
-	public static void showMenu() {
+	public static void mostrarMenuDeOpcoes() {
 		System.out.println("Escolha uma das opcoes abaixo: \n");
 
 		System.out.println("1. Escolher uma tabela de cifra nova");
@@ -168,53 +88,110 @@ public class CifrarMensagem {
 		System.out.print("Opcao: ");
 	}
 
-	public ArrayList<String> encryptMessage(String phrase) {
-		ArrayList<String> ecryptedPhrase = new ArrayList<>();
+	public static String[][] gerarTabela() {
 
-		ecryptedPhrase = makePhraseToEncrypt(phrase);
+		String alfabeto = "ABCDEFGHIJKLMNOPQRSTUVXWZ";
+		String[] alfabetoArray = alfabeto.split("");
+
+		// Copia em ArrayList para usar o shuffle.
+		ArrayList<String> alfabetoArrayList = new ArrayList<>();
+		for (int i = 0; i < alfabetoArray.length; i++) {
+			alfabetoArrayList.add(alfabetoArray[i]);
+		}
+		
+		// Embaralha o alfabeto para uma nova cifra.
+		Collections.shuffle(alfabetoArrayList);
+
+		// Monta a matriz a partir do alfabeto do ArrayList.
+		String[][] novaTabela = new String[5][5];
+		int letraContador = 0;
+
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 5; j++) {
+				novaTabela[i][j] = alfabetoArrayList.get(letraContador);
+				letraContador++;
+			}
+		}
+
+		return novaTabela;
+	}
+
+	private static String removeCaracteresInvalidos(String phrase) {
+		phrase.trim();
+		phrase = phrase.replaceAll(",", "");
+		phrase = phrase.replaceAll("\\.", "");
+		phrase = phrase.replaceAll(" ", "");
+		phrase = phrase.replaceAll("!", "");
+		phrase = phrase.replaceAll("\\?", "");
+		
+		return phrase;
+	}
+
+	public static String criptografarMensagem(String mensagemDescriptografada) {
+		String mensagemEncriptografada = makePhraseToEncrypt(mensagemDescriptografada);
 
 		return null;
+	}
+	
+	public static String makePhraseToEncrypt(String phrase) {
+		// Remocao o de espacos e pontuacoes.
+		phrase = removeCaracteresInvalidos(phrase);
 
+		String[] newPhrase = phrase.split("");
+
+		ArrayList<String> mPhrase = new ArrayList<>();
+		// Copia em ArrayList
+		for (int i = 0; i < newPhrase.length; i++) {
+			mPhrase.add(newPhrase[i]);
+		}
+
+		for (int i = 0; i < mPhrase.size(); i+=2) {
+			// Se a ultima letra sobrar. Exemplo: Iae oi --> IA EO IX
+			if (i == mPhrase.size() - 1 && mPhrase.size() % 2 != 0) {
+				mPhrase.add("X");
+				i++;
+				
+			// Se dois caracteres forem iguais. Exemplo: Iaae --> IA XE
+			} else if (i < mPhrase.size() - 1 && mPhrase.get(i).equals(mPhrase.get(i + 1))) {
+				mPhrase.add(i + 1, "X");
+				i++;
+			}
+		}
+		
+		return mPhrase.toString();
 	}
 
 	// Metodo para verificar se as duas letras estao na mesma linha
-	private boolean verifySameLine(String firstLetter, String secondLetter) {
-		int line = findLetter(firstLetter);
+	private boolean estaNaMesmaLinha(String primeiraLetra, String segundaLetra) {
+		int linha = getLinhaNaMatriz(primeiraLetra);
 		
-		for (int i = 0; i < table.length; i++) {
-			if (table[line][i].equalsIgnoreCase(secondLetter)){
+		for (int i = 0; i < tabela.length; i++) {
+			if (tabela[linha][i].equalsIgnoreCase(segundaLetra)){
 				return true;
 			}
 		}
 
 		return false;
-
 	}
-
+	
 	
 	// Metodo para encontrar a letra na matriz, retornando a linha que o mesmo se encontra
-	private int findLetter(String letter) {
-
-		boolean find = false;
-		int i;
-		for (i = 0; i < table.length; i++) {
-			for (int j = 0; j < table.length; j++) {
-				if (table[i][j].equalsIgnoreCase(letter)) {
-					find = true;
+	private int getLinhaNaMatriz(String letra) {
+		boolean encontrada = false;
+		int linha = 0, coluna = 0;
+		
+		while (!encontrada && linha < tabela.length) {
+			while (!encontrada && coluna < tabela.length) {
+				if (tabela[linha][coluna].equalsIgnoreCase(letra)) {
+					encontrada = true;
 				}
-
-				if (find == true) {
-					break;
-				}
+				coluna++;
 			}
-
-			if (find == true) {
-				break;
-			}
-
+			linha++;
 		}
 		
-		return i;
+		return linha;
 
 	}
+	
 }
