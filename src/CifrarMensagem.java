@@ -10,6 +10,8 @@ public class CifrarMensagem {
 	public static final int DECIFRAR_MENSAGEM = 4;
 	public static final int VER_ALFABETO = 5;
 	public static final int TERMINAR = 6;
+	
+	public static final int TAMANHO_MATRIZ = 5;
 
 	public static String[][] tabela;
 
@@ -18,8 +20,8 @@ public class CifrarMensagem {
 		
 		tabela = gerarTabela();
 
-		String mensagemDescriptografada = "Voce ainda nao introduziu uma mensagem para cifrar.";
-		String mensagemEncriptografa = "Voce ainda nao introduziu uma mensagem para cifrar.";
+		String mensagemDecifrada = "Voce ainda nao introduziu uma mensagem para cifrar.";
+		String mensagemCifrada = "Voce ainda nao introduziu uma mensagem para cifrar.";
 
 		int opcao = -1;
 		
@@ -28,37 +30,34 @@ public class CifrarMensagem {
 			opcao = sc.nextInt();
 			sc.nextLine();
 
+			System.out.println();
+			
 			switch (opcao) {
 				case NOVA_CIFRA:
 					tabela = gerarTabela();
-					System.out.print("A tabela da cifra foi atualizada!");
+					System.out.println("A tabela da cifra foi atualizada!");
 					break;
 					
 				case CIFRAR_MENSAGEM:
 					System.out.print("Digite a mensagem que sera cifrada: ");
-					mensagemDescriptografada = sc.nextLine().toUpperCase();
-					mensagemEncriptografa = criptografaMensagem(mensagemDescriptografada);
-					System.out.println(mensagemEncriptografa);
+					mensagemDecifrada = sc.nextLine().toUpperCase();
+					mensagemCifrada = cifraMensagem(mensagemDecifrada);
+					System.out.println("Mensagem cifrada com sucesso!");
 					break;
 
 				case VER_MENSAGEM_CIFRADA:
 					System.out.print("Essa eh a sua mensagem cifrada: ");
-					System.out.print(mensagemEncriptografa);
+					System.out.println(mensagemCifrada);
 					break;
 					
 				case DECIFRAR_MENSAGEM:
 					System.out.print("Essa eh a sua mensagem original: ");
-					System.out.print(mensagemDescriptografada);
+					System.out.println(mensagemDecifrada);
 					break;
 					
 				case VER_ALFABETO:
 					System.out.println("Tabela da cifra: ");
-					for (int i = 0; i < 5; i++) {
-						for (int j = 0; j < 5; j++) {
-								System.out.print(tabela[i][j]);
-						}
-					}
-					System.out.println();
+					imprimeTabela();
 					break;
 					
 				case TERMINAR:
@@ -72,6 +71,18 @@ public class CifrarMensagem {
 		}
 		
 		sc.close();
+	}
+
+	public static void imprimeTabela() {
+		for (int i = 0; i < TAMANHO_MATRIZ; i++) {
+			for (int j = 0; j < TAMANHO_MATRIZ; j++) {
+					if(j == TAMANHO_MATRIZ-1) {
+						System.out.println(tabela[i][j]);
+					} else {
+						System.out.print(tabela[i][j] + " ");
+					}
+			}
+		}
 	}
 
 	public static void mostrarMenuDeOpcoes() {
@@ -102,11 +113,11 @@ public class CifrarMensagem {
 		Collections.shuffle(alfabetoArrayList);
 
 		// Monta a matriz a partir do alfabeto do ArrayList.
-		String[][] novaTabela = new String[5][5];
+		String[][] novaTabela = new String[TAMANHO_MATRIZ][TAMANHO_MATRIZ];
 		int letraContador = 0;
 
-		for (int i = 0; i < 5; i++) {
-			for (int j = 0; j < 5; j++) {
+		for (int i = 0; i < TAMANHO_MATRIZ; i++) {
+			for (int j = 0; j < TAMANHO_MATRIZ; j++) {
 				novaTabela[i][j] = alfabetoArrayList.get(letraContador);
 				letraContador++;
 			}
@@ -115,10 +126,12 @@ public class CifrarMensagem {
 		return novaTabela;
 	}
 
-	public static String criptografaMensagem(String mensagemDescriptografada) {
+	public static String cifraMensagem(String mensagemDescriptografada) {
 		String mensagemCriptografada = "", primeiraLetra, segundaLetra;
 		String mensagemPreparada = preparaMensagem(mensagemDescriptografada);
 
+		boolean juntaPares = true;
+		
 		for (int i = 0; i < mensagemPreparada.length(); i+=3) {
 			primeiraLetra = String.valueOf(mensagemPreparada.charAt(i));
 			segundaLetra = String.valueOf(mensagemPreparada.charAt(i+1));
@@ -130,17 +143,20 @@ public class CifrarMensagem {
 				mensagemCriptografada += letraDeBaixo(primeiraLetra);
 				mensagemCriptografada += letraDeBaixo(segundaLetra);
 			} else {
-				
+				mensagemCriptografada += correspondente(primeiraLetra, segundaLetra);
+				mensagemCriptografada += correspondente(segundaLetra, primeiraLetra);
+
 			}
+			
+			mensagemCriptografada += (juntaPares ? "" : " ");
+			juntaPares = !juntaPares;
 		}
 		
-		return mensagemPreparada;
+		return mensagemCriptografada;
 	}
 
 	public static String preparaMensagem(String mensagem) {
 		String mensagemPreparada = "";
-		
-		mensagem = removeCaracteresInvalidos(mensagem);
 
 		for (int i = 0; i < mensagem.length(); i++) {
 			mensagemPreparada += String.valueOf(mensagem.charAt(i));
@@ -155,24 +171,13 @@ public class CifrarMensagem {
 		
 		return mensagemPreparada.trim();
 	}
-	
-	private static String removeCaracteresInvalidos(String phrase) {
-		phrase.trim();
-		phrase = phrase.replaceAll(",", "");
-		phrase = phrase.replaceAll("\\.", "");
-		phrase = phrase.replaceAll(" ", "");
-		phrase = phrase.replaceAll("!", "");
-		phrase = phrase.replaceAll("\\?", "");
-		
-		return phrase;
-	}
 
 	private static boolean estaNaMesmaLinha(String primeiraLetra, String segundaLetra) {
 		int linha = getLinhaNaMatriz(primeiraLetra);
 		
 		int coluna = 0;
 		
-		while (coluna < tabela.length) {
+		while (coluna < TAMANHO_MATRIZ) {
 			if (tabela[linha][coluna].equalsIgnoreCase(segundaLetra)){
 				return true;
 			}
@@ -188,7 +193,7 @@ public class CifrarMensagem {
 		
 		int linha = 0;
 		
-		while (linha < tabela.length) {
+		while (linha < TAMANHO_MATRIZ) {
 			if (tabela[linha][coluna].equalsIgnoreCase(segundaLetra)){
 				return true;
 			}
@@ -200,20 +205,32 @@ public class CifrarMensagem {
 	}
 	
 	private static String letraDaDireita(String letra) {
-		return null;
+		int linha = getLinhaNaMatriz(letra);
+		int coluna = getColunaNaMatriz(letra);
+
+		return tabela[linha][(coluna + 1) % TAMANHO_MATRIZ];
 	}
 	
 	private static String letraDeBaixo(String letra) {
-		return null;
+		int linha = getLinhaNaMatriz(letra);
+		int coluna = getColunaNaMatriz(letra);
+		
+		return tabela[(linha + 1) % TAMANHO_MATRIZ][coluna];
 	}
 	
+	private static String correspondente(String primeiraLetra, String segundaLetra) {
+		int linha = getLinhaNaMatriz(primeiraLetra);
+		int coluna = getColunaNaMatriz(segundaLetra);
+		
+		return tabela[linha][coluna];
+	}
 	
 	private static int getLinhaNaMatriz(String letra) {
 		boolean encontrada = false;
 		int linha = 0, coluna = 0;
 		
-		while (!encontrada && linha < tabela.length) {
-			while (!encontrada && coluna < tabela.length) {
+		while (!encontrada && linha < TAMANHO_MATRIZ) {
+			while (!encontrada && coluna < TAMANHO_MATRIZ) {
 				if (tabela[linha][coluna].equalsIgnoreCase(letra)) {
 					encontrada = true;
 				}
@@ -232,8 +249,8 @@ public class CifrarMensagem {
 		boolean encontrada = false;
 		int linha = 0, coluna = 0;
 		
-		while (!encontrada && linha < tabela.length) {
-			while (!encontrada && coluna < tabela.length) {
+		while (!encontrada && linha < TAMANHO_MATRIZ) {
+			while (!encontrada && coluna < TAMANHO_MATRIZ) {
 				if (tabela[linha][coluna].equalsIgnoreCase(letra)) {
 					encontrada = true;
 				}
