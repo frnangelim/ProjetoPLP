@@ -1,8 +1,11 @@
-# include <iostream>
-# include <string>
+#include <iostream>
+#include <algorithm>
+#include <random>
+#include <string>
 using namespace std;
 
-void geraTabela();
+void geraTabelaPadrao();
+void geraTabelaAleatoria();
 void mostraMenuDeOpcoes();
 void imprimeTabela();
 string cifraMensagem(string mensagemDescriptografada);
@@ -22,14 +25,13 @@ const int VER_MENSAGEM_CIFRADA = 3;
 const int VER_MENSAGEM_ORIGINAL = 4;
 const int VER_ALFABETO = 5;
 const int TERMINAR = 6;
-
 const int TAMANHO_MATRIZ = 5;
+const string ALFABETO ("ABCDEFGHIJKLMNOPQRSTUVWXZ");
 
 char tabela[5][5];
 
 int main() {
-
-	geraTabela();
+	geraTabelaPadrao();
 	
 	string mensagemDecifrada ("Voce ainda nao introduziu uma mensagem para cifrar.");
 	string mensagemCifrada ("Voce ainda nao introduziu uma mensagem para cifrar.");
@@ -46,7 +48,7 @@ int main() {
 
 		switch(opcao) {
 			case NOVA_CIFRA:
-				geraTabela();
+				geraTabelaAleatoria();
 				cout << "A tabela da cifra foi atualizada com sucesso!\n";
 				break;
 			case CIFRAR_MENSAGEM:
@@ -76,12 +78,26 @@ int main() {
 	}
 }
 
-void geraTabela() {
+void geraTabelaPadrao() {
 	tabela[0][0] = 'Y'; tabela[0][1] = 'Q'; tabela[0][2] = 'D'; tabela[0][3] = 'L'; tabela[0][4] = 'G';
 	tabela[1][0] = 'M'; tabela[1][1] = 'J'; tabela[1][2] = 'X'; tabela[1][3] = 'F'; tabela[1][4] = 'U';
 	tabela[2][0] = 'V'; tabela[2][1] = 'W'; tabela[2][2] = 'C'; tabela[2][3] = 'P'; tabela[2][4] = 'B';
 	tabela[3][0] = 'O'; tabela[3][1] = 'S'; tabela[3][2] = 'K'; tabela[3][3] = 'R'; tabela[3][4] = 'E';
 	tabela[4][0] = 'T'; tabela[4][1] = 'H'; tabela[4][2] = 'N'; tabela[4][3] = 'A'; tabela[4][4] = 'I';
+}
+
+void geraTabelaAleatoria() {
+	string alfabeto (ALFABETO);
+	
+	shuffle (alfabeto.begin(), alfabeto.end(), random_device());
+	
+	string::iterator it = alfabeto.begin();
+	int i, j;
+	for (i = 0; i < TAMANHO_MATRIZ; i++) {
+		for (j = 0; j < TAMANHO_MATRIZ; j++) {
+			tabela[i][j] = *it++;
+		}
+	}
 }
 
 void mostraMenuDeOpcoes() {
@@ -99,12 +115,9 @@ void imprimeTabela() {
 	int i, j;
 	for (i = 0; i < TAMANHO_MATRIZ; i++) {
 		for (j = 0; j < TAMANHO_MATRIZ; j++) {
-			if(j == TAMANHO_MATRIZ - 1) {
-				cout << tabela[i][j] << "\n";
-			} else {
-				cout << tabela[i][j] << " ";
-			}
+			cout << tabela[i][j] << " ";
 		}
+		cout << "\n";
 	}
 }
 
