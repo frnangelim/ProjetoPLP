@@ -18,7 +18,7 @@ public class CifrarMensagem {
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
 		
-		tabela = gerarTabela();
+		gerarTabela();
 
 		String mensagemDecifrada = "Voce ainda nao introduziu uma mensagem para cifrar.";
 		String mensagemCifrada = "Voce ainda nao introduziu uma mensagem para cifrar.";
@@ -34,7 +34,7 @@ public class CifrarMensagem {
 			
 			switch (opcao) {
 				case NOVA_CIFRA:
-					tabela = gerarTabela();
+					gerarTabela();
 					System.out.println("A tabela da cifra foi atualizada!");
 					break;
 					
@@ -98,7 +98,7 @@ public class CifrarMensagem {
 		System.out.print("Opcao: ");
 	}
 
-	public static String[][] gerarTabela() {
+	public static void gerarTabela() {
 
 		String alfabeto = "ABCDEFGHIJKLMNOPQRSTUVXWZ";
 		String[] alfabetoArray = alfabeto.split("");
@@ -113,17 +113,16 @@ public class CifrarMensagem {
 		Collections.shuffle(alfabetoArrayList);
 
 		// Monta a matriz a partir do alfabeto do ArrayList.
-		String[][] novaTabela = new String[TAMANHO_MATRIZ][TAMANHO_MATRIZ];
+		tabela = new String[TAMANHO_MATRIZ][TAMANHO_MATRIZ];
 		int letraContador = 0;
 
 		for (int i = 0; i < TAMANHO_MATRIZ; i++) {
 			for (int j = 0; j < TAMANHO_MATRIZ; j++) {
-				novaTabela[i][j] = alfabetoArrayList.get(letraContador);
+				tabela[i][j] = alfabetoArrayList.get(letraContador);
 				letraContador++;
 			}
 		}
-
-		return novaTabela;
+		
 	}
 
 	public static String cifraMensagem(String mensagemDescriptografada) {
@@ -136,7 +135,7 @@ public class CifrarMensagem {
 			primeiraLetra = String.valueOf(mensagemPreparada.charAt(i));
 			segundaLetra = String.valueOf(mensagemPreparada.charAt(i+1));
 			
-			if (estaNaMesmaLinha(primeiraLetra, segundaLetra)) {
+ 			if (estaNaMesmaLinha(primeiraLetra, segundaLetra)) {
 				mensagemCriptografada += letraDaDireita(primeiraLetra);
 				mensagemCriptografada += letraDaDireita(segundaLetra);
 			} else if (estaNaMesmaColuna(primeiraLetra, segundaLetra)) {
@@ -157,6 +156,8 @@ public class CifrarMensagem {
 
 	public static String preparaMensagem(String mensagem) {
 		String mensagemPreparada = "";
+		
+		mensagem = removeEspacos(mensagem);
 
 		for (int i = 0; i < mensagem.length(); i++) {
 			mensagemPreparada += String.valueOf(mensagem.charAt(i));
@@ -170,6 +171,18 @@ public class CifrarMensagem {
 		}
 		
 		return mensagemPreparada.trim();
+	}
+
+	private static String removeEspacos(String mensagem) {
+		String mensagemSemEspaco = "";
+		
+		for(int i = 0; i < mensagem.length(); i++) {
+			if(mensagem.charAt(i) != ' ') {
+				mensagemSemEspaco += String.valueOf(mensagem.charAt(i)); 
+			}
+		}
+		
+		return mensagemSemEspaco;
 	}
 
 	private static boolean estaNaMesmaLinha(String primeiraLetra, String segundaLetra) {
