@@ -27,15 +27,17 @@ const int VER_ALFABETO = 5;
 const int TERMINAR = 6;
 const int TAMANHO_MATRIZ = 5;
 const string ALFABETO ("ABCDEFGHIJKLMNOPQRSTUVWXZ");
+const string NAO_HA_MENSAGEM_CIFRADA ("Voce ainda nao introduziu uma mensagem para cifrar.");
 
 char tabela[5][5];
 
 int main() {
 	geraTabelaPadrao();
 	
-	string mensagemDecifrada ("Voce ainda nao introduziu uma mensagem para cifrar.");
-	string mensagemCifrada ("Voce ainda nao introduziu uma mensagem para cifrar.");
+	string mensagemDecifrada;
+	string mensagemCifrada;
 	string dummy;
+	bool cifrou = false;
 
 	int opcao = -1;
 
@@ -56,12 +58,21 @@ int main() {
 				getline(cin, mensagemDecifrada);
 				mensagemCifrada = cifraMensagem(mensagemDecifrada);
 				cout << "Mensagem cifrada com sucesso!\n";
+				cifrou = true;
 				break;
 			case VER_MENSAGEM_CIFRADA:
-				cout << "Essa eh a sua mensagem cifrada: " << mensagemCifrada << "\n";
+				if(cifrou) {
+					cout << "Essa eh a sua mensagem cifrada: " << mensagemCifrada << "\n";
+				} else {
+					cout << NAO_HA_MENSAGEM_CIFRADA << "\n";
+				}
 				break;
 			case VER_MENSAGEM_ORIGINAL:
-				cout << "Essa eh a sua mensagem original: " << mensagemDecifrada << "\n";
+				if(cifrou) {
+					cout << "Essa eh a sua mensagem original: " << mensagemDecifrada << "\n";
+				} else {
+					cout << NAO_HA_MENSAGEM_CIFRADA << "\n";
+				}
 				break;
 			case VER_ALFABETO:
 				cout << "Tabela da cifra:\n";
@@ -122,32 +133,32 @@ void imprimeTabela() {
 }
 
 string cifraMensagem(string mensagemDescriptografada) {
-		string mensagemCriptografada = (""), mensagemPreparada = preparaMensagem(mensagemDescriptografada);
-		char primeiraLetra, segundaLetra;
+	string mensagemCriptografada = (""), mensagemPreparada = preparaMensagem(mensagemDescriptografada);
+	char primeiraLetra, segundaLetra;
 
-		bool juntaPares = true;
-		
-		for (int i = 0; i < mensagemPreparada.length(); i+=3) {
-			primeiraLetra = mensagemPreparada[i];
-			segundaLetra = mensagemPreparada[i+1];
-			
-			if (estaNaMesmaLinha(primeiraLetra, segundaLetra)) {
-				mensagemCriptografada += letraDaDireita(primeiraLetra);
-				mensagemCriptografada += letraDaDireita(segundaLetra);
-			} else if (estaNaMesmaColuna(primeiraLetra, segundaLetra)) {
-				mensagemCriptografada += letraDeBaixo(primeiraLetra);
-				mensagemCriptografada += letraDeBaixo(segundaLetra);
-			} else {
-				mensagemCriptografada += correspondente(primeiraLetra, segundaLetra);
-				mensagemCriptografada += correspondente(segundaLetra, primeiraLetra);
-			}
-			
-			mensagemCriptografada += (juntaPares ? "" : " ");
-			juntaPares = !juntaPares;
-		}
+	bool juntaPares = true;
 	
-		return mensagemCriptografada;
+	for (int i = 0; i < mensagemPreparada.length(); i+=3) {
+		primeiraLetra = mensagemPreparada[i];
+		segundaLetra = mensagemPreparada[i+1];
+		
+		if (estaNaMesmaLinha(primeiraLetra, segundaLetra)) {
+			mensagemCriptografada += letraDaDireita(primeiraLetra);
+			mensagemCriptografada += letraDaDireita(segundaLetra);
+		} else if (estaNaMesmaColuna(primeiraLetra, segundaLetra)) {
+			mensagemCriptografada += letraDeBaixo(primeiraLetra);
+			mensagemCriptografada += letraDeBaixo(segundaLetra);
+		} else {
+			mensagemCriptografada += correspondente(primeiraLetra, segundaLetra);
+			mensagemCriptografada += correspondente(segundaLetra, primeiraLetra);
+		}
+		
+		mensagemCriptografada += (juntaPares ? "" : " ");
+		juntaPares = !juntaPares;
 	}
+
+	return mensagemCriptografada;
+}
 
 string preparaMensagem(string mensagem) {
 	string mensagemPreparada = ("");
