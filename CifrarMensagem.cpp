@@ -10,7 +10,7 @@ void mostraMenuDeOpcoes();
 void imprimeTabela();
 string cifraMensagem(string mensagemDescriptografada);
 string preparaMensagem(string mensagem);
-string removeEspacos(string mensagem);
+string removeCaracteresInvalidos(string mensagem);
 bool estaNaMesmaLinha(char primeiraLetra, char segundaLetra);
 bool estaNaMesmaColuna(char primeiraLetra, char segundaLetra);
 char letraDaDireita(char letra);
@@ -28,6 +28,7 @@ const int TERMINAR = 6;
 const int TAMANHO_MATRIZ = 5;
 const string ALFABETO ("ABCDEFGHIJKLMNOPQRSTUVWXZ");
 const string NAO_HA_MENSAGEM_CIFRADA ("Voce ainda nao introduziu uma mensagem para cifrar.");
+const string OPCAO_INVALIDA ("Voce nao digitou uma opcao valida, por favor, tente um numero de 1 a 6.");
 
 char tabela[5][5];
 
@@ -81,7 +82,7 @@ int main() {
 			case TERMINAR:
 				break;
 			default:
-				mostraMenuDeOpcoes();
+				cout << OPCAO_INVALIDA << "\n";
 				break;
 		}
 		
@@ -163,7 +164,7 @@ string cifraMensagem(string mensagemDescriptografada) {
 string preparaMensagem(string mensagem) {
 	string mensagemPreparada = ("");
 	
-	mensagem = removeEspacos(mensagem);
+	mensagem = removeCaracteresInvalidos(mensagem);
 
 	for (int i = 0; i < mensagem.length(); i++) {
 		mensagemPreparada += mensagem[i];
@@ -180,16 +181,16 @@ string preparaMensagem(string mensagem) {
 	return mensagemPreparada;
 }
 
-string removeEspacos(string mensagem) {
-	string mensagemSemEspaco ("");
+string removeCaracteresInvalidos(string mensagem) {
+	string mensagemValida ("");
 	
 	for(int i = 0; i < mensagem.length(); i++) {
-		if(mensagem[i] != ' ') {	
-			mensagemSemEspaco += mensagem[i]; 
+		if(isalpha(mensagem[i])) {	
+			mensagemValida += mensagem[i]; 
 		}
 	}
 	
-	return mensagemSemEspaco;
+	return mensagemValida;
 }
 
 bool estaNaMesmaLinha(char primeiraLetra, char segundaLetra) {
