@@ -8,7 +8,7 @@ main = do
   mostrarMenuDeOpcoes
   opcao <- getLine
   -- let value = opcaoSelecionada opcao tabela -- usar isso quando descobrir como colocar tipo genérico
-  print "só pra não dar erro"
+  print "so pra nao dar erro"
 
 
 mostrarMenuDeOpcoes :: IO()
@@ -35,3 +35,12 @@ opcaoSelecionada opcao tabela
 
 mostrarTabela :: [[String]] -> [[String]]
 mostrarTabela tabela = take 5 tabela
+
+estaNaMesmaLinha :: [[String]] -> String -> String -> Bool
+estaNaMesmaLinha tabela primeiraLetra segundaLetra = if (getLinhaNaMatriz tabela primeiraLetra 4) == (getLinhaNaMatriz tabela segundaLetra 4)
+                                                    then True else False
+
+getLinhaNaMatriz :: [[String]] -> String -> Int -> Int
+getLinhaNaMatriz tabela letra 0 = if elem letra (tabela !! 0) then 0 else -1
+getLinhaNaMatriz tabela letra indice = if elem letra (tabela !! indice) then indice 
+                                       else getLinhaNaMatriz tabela letra (indice-1) -- Indice = indice da ultima linha da tabela
