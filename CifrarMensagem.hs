@@ -55,3 +55,17 @@ getColunaNaMatriz tabela letra indiceLinha 0 = if tabela !! indiceLinha !! 0 == 
 getColunaNaMatriz tabela letra indiceLinha indiceColuna = if tabela !! indiceLinha !! indiceColuna == letra
                                                           then indiceColuna 
                                                           else getColunaNaMatriz tabela letra indiceLinha (indiceColuna-1)
+
+letraDaDireita :: [[String]] -> String -> String
+letraDaDireita tabela letra = let linha = getLinhaNaMatriz tabela letra 4 in let coluna = getColunaNaMatriz tabela letra linha 4 in
+                              tabela !! linha !! ((coluna+1)`mod`5)
+
+letraDeBaixo :: [[String]] -> String -> String
+letraDeBaixo tabela letra = let linha = getLinhaNaMatriz tabela letra 4 in let coluna = getColunaNaMatriz tabela letra linha 4 in
+                            tabela !! ((linha+1)`mod`5) !! coluna
+
+correspondente :: [[String]] -> String -> String -> String
+correspondente tabela primeiraLetra segundaLetra = let linha = getLinhaNaMatriz tabela primeiraLetra 4 in 
+                                                   let coluna = getColunaNaMatriz tabela segundaLetra (getLinhaNaMatriz tabela segundaLetra 4) 4 in
+                                                   tabela !! linha !! coluna
+
