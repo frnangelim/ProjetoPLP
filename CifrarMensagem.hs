@@ -42,5 +42,16 @@ estaNaMesmaLinha tabela primeiraLetra segundaLetra = if (getLinhaNaMatriz tabela
 
 getLinhaNaMatriz :: [[String]] -> String -> Int -> Int
 getLinhaNaMatriz tabela letra 0 = if elem letra (tabela !! 0) then 0 else -1
-getLinhaNaMatriz tabela letra indice = if elem letra (tabela !! indice) then indice 
-                                       else getLinhaNaMatriz tabela letra (indice-1) -- Indice = indice da ultima linha da tabela
+getLinhaNaMatriz tabela letra indiceLinha = if elem letra (tabela !! indiceLinha) then indiceLinha 
+                                       else getLinhaNaMatriz tabela letra (indiceLinha-1)
+
+estaNaMesmaColuna ::  [[String]] -> String -> String -> Bool
+estaNaMesmaColuna tabela primeiraLetra segundaLetra = if getColunaNaMatriz tabela primeiraLetra (getLinhaNaMatriz tabela primeiraLetra 4) 4 
+                                                      == getColunaNaMatriz tabela segundaLetra (getLinhaNaMatriz tabela segundaLetra 4) 4 
+                                                      then True else False
+
+getColunaNaMatriz :: [[String]] -> String -> Int -> Int -> Int
+getColunaNaMatriz tabela letra indiceLinha 0 = if tabela !! indiceLinha !! 0 == letra then 0 else -1
+getColunaNaMatriz tabela letra indiceLinha indiceColuna = if tabela !! indiceLinha !! indiceColuna == letra
+                                                          then indiceColuna 
+                                                          else getColunaNaMatriz tabela letra indiceLinha (indiceColuna-1)
