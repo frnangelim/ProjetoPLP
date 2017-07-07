@@ -7,6 +7,10 @@ main = do
                   ["T","H","N","A","I"]])
   mostrarMenuDeOpcoes
   opcao <- getLine
+  --mensagemPreparada <- getLine
+  --let msgpreparada = read mensagemPreparada
+  --let cifrada = cifraMensagem tabela msg
+  --print (cifrada)
   -- let value = opcaoSelecionada opcao tabela -- usar isso quando descobrir como colocar tipo genérico
   print "so pra nao dar erro"
 
@@ -69,3 +73,10 @@ correspondente tabela primeiraLetra segundaLetra = let linha = getLinhaNaMatriz 
                                                    let coluna = getColunaNaMatriz tabela segundaLetra (getLinhaNaMatriz tabela segundaLetra 4) 4 in
                                                    tabela !! linha !! coluna
 
+cifraMensagem :: [[String]] -> [String] -> [String] -- A mensagem recebida deve ser no formato: 
+                                                    --["E","X","E","S","T","A","C","I","F","R","A","E","I","N","Q","U","E","B","R","A","V","E","L","X"]
+cifraMensagem tabela [] = []
+cifraMensagem tabela (a:b:mensagemPreparada) = if estaNaMesmaLinha tabela a b then [letraDaDireita tabela a] ++ [letraDaDireita tabela b]
+                                                 ++ cifraMensagem tabela mensagemPreparada else 
+                                                      if estaNaMesmaColuna tabela a b then [letraDeBaixo tabela a] ++ [letraDeBaixo tabela b] ++ cifraMensagem tabela mensagemPreparada 
+                                                      else [correspondente tabela a b] ++ [correspondente tabela b a] ++ cifraMensagem tabela mensagemPreparada
