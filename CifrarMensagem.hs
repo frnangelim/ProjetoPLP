@@ -6,14 +6,27 @@ main = do
                   ["O","S","K","R","E"],
                   ["T","H","N","A","I"]])
   mostrarMenuDeOpcoes
-  opcao <- getLine
+  opcaoArg <- getLine
+  --putStrLn ("\n")
+  let opcao = read opcaoArg
+  let resultadoProcessamento = processa opcao tabela
   --mensagemPreparada <- getLine
   --let msgpreparada = read mensagemPreparada
-  --let cifrada = cifraMensagem tabela msg
-  --print (cifrada)
-  -- let value = opcaoSelecionada opcao tabela -- usar isso quando descobrir como colocar tipo genérico
-  print "so pra nao dar erro"
+  --let cifrada = cifraMensagem tabela msgpreparada
+  putStrLn ("\n" ++ resultadoProcessamento ++ "\n")
+  main
 
+processa :: Int -> [[String]] -> String
+processa 1 tabela = "Opcao 1 nao implementada"
+processa 2 tabela = "Opcao 2 nao implementada"
+processa 3 tabela = "Opcao 3 nao implementada"
+processa 4 tabela = "Opcao 4 nao implementada"
+processa 5 tabela = imprimeTabela tabela
+processa 6 tabela = ""
+
+imprimeTabela :: [[String]] -> String
+imprimeTabela [] = ""
+imprimeTabela (x:xs) = unwords x ++ "\n" ++ imprimeTabela xs
 
 mostrarMenuDeOpcoes :: IO()
 mostrarMenuDeOpcoes = do 
@@ -25,20 +38,6 @@ mostrarMenuDeOpcoes = do
   putStrLn ("5. Ver o alfabeto")
   putStrLn ("6. Terminar\n")
   putStrLn ("Opcao: ")
-  
-opcaoSelecionada :: String -> [[String]] -> String -- Verificar como colocar tipo genérico
-opcaoSelecionada opcao tabela 
-                       | (opcao == "1") = "Opcao 1"
-                       | (opcao == "2") = "Opcao 2"
-                       | (opcao == "3") = "Opcao 3"
-                       | (opcao == "4") = "Opcao 4"
-                       | (opcao == "5") = "Opcao 5"
-                       | (opcao == "6") = "Programa encerrado."
-                       | otherwise = "Digite uma opcao valida"
-
-
-mostrarTabela :: [[String]] -> [[String]]
-mostrarTabela tabela = take 5 tabela
 
 estaNaMesmaLinha :: [[String]] -> String -> String -> Bool
 estaNaMesmaLinha tabela primeiraLetra segundaLetra = if (getLinhaNaMatriz tabela primeiraLetra 4) == (getLinhaNaMatriz tabela segundaLetra 4)
