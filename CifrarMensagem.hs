@@ -1,28 +1,31 @@
-main :: IO ()
-main = do
-  let tabela = ([["Y","Q","D","L","G"],
+_tabela = ([["Y","Q","D","L","G"],
                   ["M","J","X","F","U"],
                   ["V","W","C","P","B"],
                   ["O","S","K","R","E"],
                   ["T","H","N","A","I"]])
+_indiceTabela = 4
+_tamanhoTabela = 5
+
+main :: IO ()
+main = do
   mostrarMenuDeOpcoes
   opcaoArg <- getLine
   --putStrLn ("\n")
   let opcao = read opcaoArg
-  let resultadoProcessamento = processa opcao tabela
+  let resultadoProcessamento = processa opcao
   --mensagemPreparada <- getLine
   --let msgpreparada = read mensagemPreparada
   --let cifrada = cifraMensagem tabela msgpreparada
   putStrLn ("\n" ++ resultadoProcessamento ++ "\n")
   main
 
-processa :: Int -> [[String]] -> String
-processa 1 tabela = "Opcao 1 nao implementada"
-processa 2 tabela = "Opcao 2 nao implementada"
-processa 3 tabela = "Opcao 3 nao implementada"
-processa 4 tabela = "Opcao 4 nao implementada"
-processa 5 tabela = imprimeTabela tabela
-processa 6 tabela = ""
+processa :: Int -> String
+processa 1 = "Opcao 1 nao implementada"
+processa 2 = "Opcao 2 nao implementada"
+processa 3 = "Opcao 3 nao implementada"
+processa 4 = "Opcao 4 nao implementada"
+processa 5 = imprimeTabela _tabela
+processa 6 = cifraMensagem ["E","X","E","S","T","A","C","I","F","R","A","E","I","N","Q","U","E","B","R","A","V","E","L","X"]
 
 imprimeTabela :: [[String]] -> String
 imprimeTabela [] = ""
@@ -39,43 +42,46 @@ mostrarMenuDeOpcoes = do
   putStrLn ("6. Terminar\n")
   putStrLn ("Opcao: ")
 
-estaNaMesmaLinha :: [[String]] -> String -> String -> Bool
-estaNaMesmaLinha tabela primeiraLetra segundaLetra = if (getLinhaNaMatriz tabela primeiraLetra 4) == (getLinhaNaMatriz tabela segundaLetra 4)
-                                                    then True else False
+estaNaMesmaLinha :: String -> String -> Bool
+estaNaMesmaLinha primeiraLetra segundaLetra = indiceLinhaPrimeiraLetra == indiceLinhaSegundaLetra
+    where indiceLinhaPrimeiraLetra = getLinhaNaMatriz primeiraLetra _indiceTabela
+          indiceLinhaSegundaLetra  = getLinhaNaMatriz segundaLetra _indiceTabela
 
-getLinhaNaMatriz :: [[String]] -> String -> Int -> Int
-getLinhaNaMatriz tabela letra 0 = if elem letra (tabela !! 0) then 0 else -1
-getLinhaNaMatriz tabela letra indiceLinha = if elem letra (tabela !! indiceLinha) then indiceLinha 
-                                       else getLinhaNaMatriz tabela letra (indiceLinha-1)
+getLinhaNaMatriz :: String -> Int -> Int
+getLinhaNaMatriz letra 0 = if letra `elem` (_tabela !! 0) then 0 else -1
+getLinhaNaMatriz letra indiceLinha = if letra `elem` linhaAtual then indiceLinha 
+                                     else getLinhaNaMatriz letra (indiceLinha-1)
+    where linhaAtual = _tabela !! indiceLinha
 
-estaNaMesmaColuna ::  [[String]] -> String -> String -> Bool
-estaNaMesmaColuna tabela primeiraLetra segundaLetra = if getColunaNaMatriz tabela primeiraLetra (getLinhaNaMatriz tabela primeiraLetra 4) 4 
-                                                      == getColunaNaMatriz tabela segundaLetra (getLinhaNaMatriz tabela segundaLetra 4) 4 
-                                                      then True else False
+estaNaMesmaColuna :: String -> String -> Bool
+estaNaMesmaColuna primeiraLetra segundaLetra = indiceColunaPrimeiraLetra == indiceColunaSegundaLetra
+    where indiceColunaPrimeiraLetra = getColunaNaMatriz primeiraLetra indiceLinhaPrimeiraLetra _indiceTabela
+          indiceColunaSegundaLetra  = getColunaNaMatriz segundaLetra indiceLinhaPrimeiraLetra _indiceTabela
+          indiceLinhaPrimeiraLetra  = getLinhaNaMatriz primeiraLetra _indiceTabela
+          indiceLinhaSegundaLetra   = getLinhaNaMatriz segundaLetra _indiceTabela
 
-getColunaNaMatriz :: [[String]] -> String -> Int -> Int -> Int
-getColunaNaMatriz tabela letra indiceLinha 0 = if tabela !! indiceLinha !! 0 == letra then 0 else -1
-getColunaNaMatriz tabela letra indiceLinha indiceColuna = if tabela !! indiceLinha !! indiceColuna == letra
-                                                          then indiceColuna 
-                                                          else getColunaNaMatriz tabela letra indiceLinha (indiceColuna-1)
+getColunaNaMatriz :: String -> Int -> Int -> Int
+getColunaNaMatriz letra indiceLinha 0 = if letra == _tabela !! indiceLinha !! 0 then 0 else -1
+getColunaNaMatriz letra indiceLinha indiceColuna = if letra == letraDaColunaAtual then indiceColuna 
+												   else getColunaNaMatriz letra indiceLinha (indiceColuna-1)
+    where letraDaColunaAtual = _tabela !! indiceLinha !! indiceColuna
 
-letraDaDireita :: [[String]] -> String -> String
-letraDaDireita tabela letra = let linha = getLinhaNaMatriz tabela letra 4 in let coluna = getColunaNaMatriz tabela letra linha 4 in
-                              tabela !! linha !! ((coluna+1)`mod`5)
+letraDaDireita :: String -> String
+letraDaDireita letra = let linha = getLinhaNaMatriz letra _indiceTabela in let coluna = getColunaNaMatriz letra linha _indiceTabela in
+                              _tabela !! linha !! ((coluna+1) `mod` _tamanhoTabela)
 
-letraDeBaixo :: [[String]] -> String -> String
-letraDeBaixo tabela letra = let linha = getLinhaNaMatriz tabela letra 4 in let coluna = getColunaNaMatriz tabela letra linha 4 in
-                            tabela !! ((linha+1)`mod`5) !! coluna
+letraDeBaixo :: String -> String
+letraDeBaixo letra = let linha = getLinhaNaMatriz letra _indiceTabela in let coluna = getColunaNaMatriz letra linha _indiceTabela in
+                            _tabela !! ((linha+1) `mod` _tamanhoTabela) !! coluna
 
-correspondente :: [[String]] -> String -> String -> String
-correspondente tabela primeiraLetra segundaLetra = let linha = getLinhaNaMatriz tabela primeiraLetra 4 in 
-                                                   let coluna = getColunaNaMatriz tabela segundaLetra (getLinhaNaMatriz tabela segundaLetra 4) 4 in
-                                                   tabela !! linha !! coluna
+correspondente :: String -> String -> String
+correspondente primeiraLetra segundaLetra = let linha = getLinhaNaMatriz primeiraLetra _indiceTabela in 
+                                                   let coluna = getColunaNaMatriz segundaLetra (getLinhaNaMatriz segundaLetra _indiceTabela) _indiceTabela in
+                                                   _tabela !! linha !! coluna
 
-cifraMensagem :: [[String]] -> [String] -> [String] -- A mensagem recebida deve ser no formato: 
-                                                    --["E","X","E","S","T","A","C","I","F","R","A","E","I","N","Q","U","E","B","R","A","V","E","L","X"]
-cifraMensagem tabela [] = []
-cifraMensagem tabela (a:b:mensagemPreparada) = if estaNaMesmaLinha tabela a b then [letraDaDireita tabela a] ++ [letraDaDireita tabela b]
-                                                 ++ cifraMensagem tabela mensagemPreparada else 
-                                                      if estaNaMesmaColuna tabela a b then [letraDeBaixo tabela a] ++ [letraDeBaixo tabela b] ++ cifraMensagem tabela mensagemPreparada 
-                                                      else [correspondente tabela a b] ++ [correspondente tabela b a] ++ cifraMensagem tabela mensagemPreparada
+-- A mensagem recebida deve ser no formato: ["E","X","E","S","T","A","C","I","F","R","A","E","I","N","Q","U","E","B","R","A","V","E","L","X"]
+cifraMensagem :: [String] -> String
+cifraMensagem [] = []
+cifraMensagem (a:b:cs) =  if estaNaMesmaLinha a b then letraDaDireita a ++ letraDaDireita b ++ cifraMensagem cs
+						  else if estaNaMesmaColuna a b then letraDeBaixo a ++ letraDeBaixo b ++ cifraMensagem cs
+						  else correspondente a b ++ correspondente b a ++ cifraMensagem cs
