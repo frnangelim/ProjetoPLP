@@ -57,10 +57,6 @@ transformaTabela :: [[Char]] -> String
 transformaTabela [] = ""
 transformaTabela (x:xs) = (adicionaEspacoACada 1 x) ++ "\n" ++ transformaTabela xs
 
-adicionaEspacoEntreCaracters :: String -> String
-adicionaEspacoEntreCaracters [] = ""
-adicionaEspacoEntreCaracters (x:xs) = x:' ':[] ++ adicionaEspacoEntreCaracters xs
-
 adicionaEspacoACada :: Int -> String -> String
 adicionaEspacoACada fatorPulo frase = if length frase <= fatorPulo then frase
 								 else (take fatorPulo frase) ++ " " ++ adicionaEspacoACada fatorPulo (drop fatorPulo frase)
