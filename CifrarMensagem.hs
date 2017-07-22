@@ -1,87 +1,113 @@
-_tabela = ([["Y","Q","D","L","G"],
-                  ["M","J","X","F","U"],
-                  ["V","W","C","P","B"],
-                  ["O","S","K","R","E"],
-                  ["T","H","N","A","I"]])
-_indiceTabela = 4
-_tamanhoTabela = 5
+import Data.Char
+
+_CIFRAR_MENSAGEM = 1
+_INDICE_TABELA = 4
+_TAMANHO_TABELA = 5
+_TABELA = ([['Y','Q','D','L','G'],
+			['M','J','X','F','U'],
+			['V','W','C','P','B'],
+			['O','S','K','R','E'],
+			['T','H','N','A','I']])
 
 main :: IO ()
 main = do
   mostrarMenuDeOpcoes
-  opcaoArg <- getLine
-  --putStrLn ("\n")
-  let opcao = read opcaoArg
-  let resultadoProcessamento = processa opcao
-  --mensagemPreparada <- getLine
-  --let msgpreparada = read mensagemPreparada
-  --let cifrada = cifraMensagem tabela msgpreparada
-  putStrLn ("\n" ++ resultadoProcessamento ++ "\n")
-  main
+  
+  opcaoArgs <- getLine
+  let opcao = read opcaoArgs
+  
+  mensagemArgs <- getLine
+  let mensagem = read mensagemArgs
+  
+  let mensagemPreparada = preparaMensagem mensagem
+  let resultadoProcessamento = processa opcao mensagemPreparada
+  
+  putStrLn ("\n")
+  
+  if not (ehVazia resultadoProcessamento) then do
+	{ putStrLn (resultadoProcessamento ++ "\n"); main }
+  else do
+    { putStrLn ("Volte sempre! :)") }
 
-processa :: Int -> String
-processa 1 = "Opcao 1 nao implementada"
-processa 2 = "Opcao 2 nao implementada"
-processa 3 = "Opcao 3 nao implementada"
-processa 4 = "Opcao 4 nao implementada"
-processa 5 = imprimeTabela _tabela
-processa 6 = cifraMensagem ["E","X","E","S","T","A","C","I","F","R","A","E","I","N","Q","U","E","B","R","A","V","E","L","X"]
+preparaMensagem :: String -> String
+preparaMensagem frase = juntaDoisADois fraseValida
+    where fraseValida = removeCaracInvalidos frase
 
-imprimeTabela :: [[String]] -> String
-imprimeTabela [] = ""
-imprimeTabela (x:xs) = unwords x ++ "\n" ++ imprimeTabela xs
+juntaDoisADois :: String -> String
+juntaDoisADois [] = ""
+juntaDoisADois (x:[]) = (x:'X':[])
+juntaDoisADois (x:y:xs) = if x == y then (x:'X':[]) ++ juntaDoisADois (y:xs)
+						  else(x:y:[]) ++ juntaDoisADois xs
+
+removeCaracInvalidos :: String -> String
+removeCaracInvalidos frase = [ x | x <- frase, isLetter x ]
 
 mostrarMenuDeOpcoes :: IO()
-mostrarMenuDeOpcoes = do 
+mostrarMenuDeOpcoes = do
   putStrLn ("Escolha uma das opcoes abaixo:\n")
-  putStrLn ("1. Escolher uma tabela de cifra nova")
-  putStrLn ("2. Introduzir uma mensagem para cifrar")
-  putStrLn ("3. Ver a mensagem cifrada")
-  putStrLn ("4. Decifrar a mensagem")
-  putStrLn ("5. Ver o alfabeto")
-  putStrLn ("6. Terminar\n")
+  putStrLn ("1. Cifrar mensagem")
+  putStrLn ("2. Ver o alfabeto")
+  putStrLn ("3. Terminar\n")
   putStrLn ("Opcao: ")
 
-estaNaMesmaLinha :: String -> String -> Bool
-estaNaMesmaLinha primeiraLetra segundaLetra = indiceLinhaPrimeiraLetra == indiceLinhaSegundaLetra
-    where indiceLinhaPrimeiraLetra = getLinhaNaMatriz primeiraLetra _indiceTabela
-          indiceLinhaSegundaLetra  = getLinhaNaMatriz segundaLetra _indiceTabela
+processa :: Int -> String -> String
+processa 1 mensagem = adicionaEspacoCadaQuatro (cifraMensagem mensagem)
+processa 2 mensagem = transformaTabela _TABELA
+processa opcaoInvalida mensagem = ""
 
-getLinhaNaMatriz :: String -> Int -> Int
-getLinhaNaMatriz letra 0 = if letra `elem` (_tabela !! 0) then 0 else -1
+transformaTabela :: [[Char]] -> String
+transformaTabela [] = ""
+transformaTabela (x:xs) = adicionaEspacoEntreCaracters x ++ "\n" ++ transformaTabela xs
+
+adicionaEspacoEntreCaracters :: String -> String
+adicionaEspacoEntreCaracters [] = ""
+adicionaEspacoEntreCaracters (x:xs) = x:' ':[] ++ adicionaEspacoEntreCaracters xs
+
+ehVazia :: String -> Bool
+ehVazia "" = True
+ehVazia string = False
+
+estaNaMesmaLinha :: Char -> Char -> Bool
+estaNaMesmaLinha primeiraLetra segundaLetra = indiceLinhaPrimeiraLetra == indiceLinhaSegundaLetra
+    where indiceLinhaPrimeiraLetra = getLinhaNaMatriz primeiraLetra _INDICE_TABELA
+          indiceLinhaSegundaLetra  = getLinhaNaMatriz segundaLetra _INDICE_TABELA
+
+getLinhaNaMatriz :: Char -> Int -> Int
+getLinhaNaMatriz letra 0 = if letra `elem` (_TABELA !! 0) then 0 else -1
 getLinhaNaMatriz letra indiceLinha = if letra `elem` linhaAtual then indiceLinha 
                                      else getLinhaNaMatriz letra (indiceLinha-1)
-    where linhaAtual = _tabela !! indiceLinha
+    where linhaAtual = _TABELA !! indiceLinha
 
-estaNaMesmaColuna :: String -> String -> Bool
+estaNaMesmaColuna :: Char -> Char -> Bool
 estaNaMesmaColuna primeiraLetra segundaLetra = indiceColunaPrimeiraLetra == indiceColunaSegundaLetra
-    where indiceColunaPrimeiraLetra = getColunaNaMatriz primeiraLetra indiceLinhaPrimeiraLetra _indiceTabela
-          indiceColunaSegundaLetra  = getColunaNaMatriz segundaLetra indiceLinhaPrimeiraLetra _indiceTabela
-          indiceLinhaPrimeiraLetra  = getLinhaNaMatriz primeiraLetra _indiceTabela
-          indiceLinhaSegundaLetra   = getLinhaNaMatriz segundaLetra _indiceTabela
+    where indiceColunaPrimeiraLetra = getColunaNaMatriz primeiraLetra (getLinhaNaMatriz primeiraLetra _INDICE_TABELA) _INDICE_TABELA
+          indiceColunaSegundaLetra  = getColunaNaMatriz segundaLetra (getLinhaNaMatriz segundaLetra _INDICE_TABELA) _INDICE_TABELA
 
-getColunaNaMatriz :: String -> Int -> Int -> Int
-getColunaNaMatriz letra indiceLinha 0 = if letra == _tabela !! indiceLinha !! 0 then 0 else -1
+getColunaNaMatriz :: Char -> Int -> Int -> Int
+getColunaNaMatriz letra indiceLinha 0 = if letra == _TABELA !! indiceLinha !! 0 then 0 else -1
 getColunaNaMatriz letra indiceLinha indiceColuna = if letra == letraDaColunaAtual then indiceColuna 
 												   else getColunaNaMatriz letra indiceLinha (indiceColuna-1)
-    where letraDaColunaAtual = _tabela !! indiceLinha !! indiceColuna
+    where letraDaColunaAtual = _TABELA !! indiceLinha !! indiceColuna
 
-letraDaDireita :: String -> String
-letraDaDireita letra = let linha = getLinhaNaMatriz letra _indiceTabela in let coluna = getColunaNaMatriz letra linha _indiceTabela in
-                              _tabela !! linha !! ((coluna+1) `mod` _tamanhoTabela)
+letraDaDireita :: Char -> Char
+letraDaDireita letra = let linha = getLinhaNaMatriz letra _INDICE_TABELA in let coluna = getColunaNaMatriz letra linha _INDICE_TABELA in
+                              _TABELA !! linha !! ((coluna+1) `mod` _TAMANHO_TABELA)
 
-letraDeBaixo :: String -> String
-letraDeBaixo letra = let linha = getLinhaNaMatriz letra _indiceTabela in let coluna = getColunaNaMatriz letra linha _indiceTabela in
-                            _tabela !! ((linha+1) `mod` _tamanhoTabela) !! coluna
+letraDeBaixo :: Char -> Char
+letraDeBaixo letra = let linha = getLinhaNaMatriz letra _INDICE_TABELA in let coluna = getColunaNaMatriz letra linha _INDICE_TABELA in
+                            _TABELA !! ((linha+1) `mod` _TAMANHO_TABELA) !! coluna
 
-correspondente :: String -> String -> String
-correspondente primeiraLetra segundaLetra = let linha = getLinhaNaMatriz primeiraLetra _indiceTabela in 
-                                                   let coluna = getColunaNaMatriz segundaLetra (getLinhaNaMatriz segundaLetra _indiceTabela) _indiceTabela in
-                                                   _tabela !! linha !! coluna
+correspondente :: Char -> Char -> Char
+correspondente primeiraLetra segundaLetra = let linha = getLinhaNaMatriz primeiraLetra _INDICE_TABELA in 
+                                                   let coluna = getColunaNaMatriz segundaLetra (getLinhaNaMatriz segundaLetra _INDICE_TABELA) _INDICE_TABELA in
+                                                   _TABELA !! linha !! coluna
 
--- A mensagem recebida deve ser no formato: ["E","X","E","S","T","A","C","I","F","R","A","E","I","N","Q","U","E","B","R","A","V","E","L","X"]
-cifraMensagem :: [String] -> String
+adicionaEspacoCadaQuatro :: String -> String
+adicionaEspacoCadaQuatro frase = if length frase <= 4 then frase
+							  else take 4 frase ++ " " ++ adicionaEspacoCadaQuatro (drop 4 frase)
+
+cifraMensagem :: String -> String
 cifraMensagem [] = []
-cifraMensagem (a:b:cs) =  if estaNaMesmaLinha a b then letraDaDireita a ++ letraDaDireita b ++ cifraMensagem cs
-						  else if estaNaMesmaColuna a b then letraDeBaixo a ++ letraDeBaixo b ++ cifraMensagem cs
-						  else correspondente a b ++ correspondente b a ++ cifraMensagem cs
+cifraMensagem (a:b:cs) =  if estaNaMesmaLinha a b then letraDaDireita a : letraDaDireita b : cifraMensagem cs
+						  else if estaNaMesmaColuna a b then letraDeBaixo a : letraDeBaixo b : cifraMensagem cs
+						  else correspondente a b : correspondente b a : cifraMensagem cs
