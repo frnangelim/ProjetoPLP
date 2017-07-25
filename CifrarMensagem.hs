@@ -1,6 +1,5 @@
 import Data.Char
 
-_CIFRAR_MENSAGEM = 1
 _INDICE_TABELA = 4
 _TAMANHO_TABELA = 5
 _TABELA = ([['Y','Q','D','L','G'],
@@ -41,7 +40,7 @@ processa 3 mensagem = ""
 processa opcaoInvalida mensagem = "Você inseriu uma opção inválida, que tal tentar novamente?"
 
 preparaMensagem :: String -> String
-preparaMensagem frase = map toUpper (juntaDoisADois fraseValida)
+preparaMensagem frase = juntaDoisADois (map toUpper fraseValida)
     where fraseValida = removeCaracInvalidos frase
 
 juntaDoisADois :: String -> String
