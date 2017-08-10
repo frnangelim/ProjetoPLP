@@ -1,10 +1,24 @@
+cabeca([Cabeca|Cauda], Cauda).
+cauda([Cabeca|Cauda], Cauda).
+
+retiraCaractereInvalido(Lista, [] , []).
+retiraCaractereInvalido(Lista, [Lista|Cauda], ['w'|G]):- retiraCaractereInvalido(Lista, Cauda, G).
+retiraCaractereInvalido(Lista, [Cabeca|Cauda] , [Cabeca|G]):- retiraCaractereInvalido(Lista, Cauda, G).
+
+colocaX('',[Cabeca|Cauda], [Cabeca]).
+colocaX(Cabeca,[Cabeca|Cauda], G) :- cabeca(Cauda,CabecaCauda), colocaX(CabecaCauda,Cabeca,S), N is ['x'|S] , G is [Cabeca|N].
+colocaX(X,[Cabeca|Cauda], G) :- cabeca(Cauda,CabecaCauda), colocaX(CabecaCauda,Cauda,S), G is [Cabeca|S].
 
 
-TABELA = ([['Y','Q','D','L','G'],
-			['M','J','X','F','U'],
-			['V','W','C','P','B'],
-			['O','S','K','R','E'],
-			['T','H','N','A','I']])
-			
-INDICE_TABELA is 4
-TAMANHO_TABELA is 5
+:- initialization main.
+
+main:-
+
+	read_line_to_codes(user_input, M),
+	string_to_atom(M,M2),
+	string_chars(M2,Mensagem),
+	retiraCaractereInvalido(' ',Mensagem,MensagemSemEspaco),
+	cauda(SemEspaco,Cauda),
+	cabeca(Cauda,CabecaCauda),
+	colocaX(CabecaCauda,SemEspaco,MensagemComX), 
+	write(MensagemComX).
