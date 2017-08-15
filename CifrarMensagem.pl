@@ -9,6 +9,8 @@ colocaX('',[Cabeca|Cauda], [Cabeca]).
 colocaX(Cabeca,[Cabeca|Cauda], G) :- cabeca(Cauda,CabecaCauda), colocaX(CabecaCauda,Cabeca,S), N is ['x'|S] , G is [Cabeca|N].
 colocaX(X,[Cabeca|Cauda], G) :- cabeca(Cauda,CabecaCauda), colocaX(CabecaCauda,Cauda,S), G is [Cabeca|S].
 
+matriz([['a','b','c','d','e'],['f','g','h','i','j'], ['k','l','m','n','o'], ['p','q','r','s','t'], ['u','v','w','x','z']]).
+
 
 :- initialization main.
 
