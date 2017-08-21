@@ -29,11 +29,11 @@ encontraColuna(E,0,0) :- coluna(0,L), pertence(E,L).
 encontraColuna(E,I,R) :- coluna(I,L), pertence(E,L), R is I.
 encontraColuna(E,I,R) :- encontraColuna(E,I2,R), I is I2+1.
 
-getByIndice(I,[E|L],I, R) :- R is E.
-getByIndice(I,[_|L],IA, R) :- getByIndice(I,L,IA2,R), IA is IA2+1.
 
-% letraDeBaixo(letra,R) :- encontraLinha(letra,4,I),encontraColuna(letra,4,J),linha(I+1,L),getByIndice(J,L,4,Z), R is Z.
+getByIndice(I,[E|L],I, E).
+getByIndice(I,[_|L],IA, R) :- getByIndice(I,L,IA2,R), IA is IA2-1.
 
+letraDeBaixo(letra,R) :- encontraLinha(letra,4,I),encontraColuna(letra,4,J),linha(B,L),B is I+1, getByIndice(J,L,0,R).
 
 cabeca([Cabeca|Cauda], Cauda).
 cauda([Cabeca|Cauda], Cauda).
@@ -60,6 +60,6 @@ main:-
 	cauda(SemEspaco,Cauda),
 	cabeca(Cauda,CabecaCauda),
 	colocaX(CabecaCauda,SemEspaco,MensagemComX),*/
-	letraDeBaixo('A',R),
+	encontraColuna('Y',4,R),
 
 	write(R).
