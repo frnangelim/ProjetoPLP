@@ -1,3 +1,6 @@
+3 ?- use_module(library(random)).
+
+
 /* Tabela default, pesquisa por linha */
 linha(0,['Y','Q','D','L','G']).
 linha(1,['M','J','X','F','U']).
@@ -10,6 +13,10 @@ coluna(1,['Q','J','W','S','H']).
 coluna(2,['D','X','C','K','N']).
 coluna(3,['L','F','P','R','A']).
 coluna(4,['G','U','B','E','I']).
+
+/* Gerando uma Matriz Aleatoria*/
+matrizAleatoria(matriz,[]).
+matrizAleatoria L,K :- random_permutation(L,K). 
 
 
 % Verifica se um elemento pertence a uma lista.
