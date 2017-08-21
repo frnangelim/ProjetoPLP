@@ -38,28 +38,54 @@ letraDeBaixo(letra,R) :- encontraLinha(letra,4,I),encontraColuna(letra,4,J),linh
 cabeca([Cabeca|Cauda], Cauda).
 cauda([Cabeca|Cauda], Cauda).
 
-retiraCaractereInvalido(Lista, [] , []).
+colocaX(Lista, [], [Lista]).
+colocaX(Lista, [Lista|Cauda], [Lista|['x'|S]]) :- colocaX(Lista,Cauda,S).
+colocaX(Lista, [Cabeca|Cauda], [Lista|S]) :- colocaX(Cabeca,Cauda,S).
 
-retiraCaractereInvalido(Lista, [Lista|Cauda], ['w'|G]):- retiraCaractereInvalido(Lista, Cauda, G).
-retiraCaractereInvalido(Lista, [Cabeca|Cauda] , [Cabeca|G]):- retiraCaractereInvaVlido(Lista, Cauda, G).
 
-colocaX('',[Cabeca|Cauda], [Cabeca]).
-colocaX(Cabeca,[Cabeca|Cauda], G) :- cabeca(Cauda,CabecaCauda), colocaX(CabecaCauda,Cabeca,S), N is ['x'|S] , G is [Cabeca|N].
-colocaX(X,[Cabeca|Cauda], G) :- cabeca(Cauda,CabecaCauda), colocaX(CabecaCauda,Cauda,S), G is [Cabeca|S].
+/*Funcaoo que retorna a matriz atual*/
+retornaMatriz:-
+	write("Matriz atual:"),nl,
+	matriz(Matriz),
+	escreveMatriz(Matriz),nl,nl,
+	main.
+	
+	
+escreveLinha([]).
+escreveLinha([Cabeca|Cauda]) :- write(Cabeca), write(" "), 
+					   escreveLinha(Cauda).
 
-matriz([['a','b','c','d','e'],['f','g','h','i','j'], ['k','l','m','n','o'], ['p','q','r','s','t'], ['u','v','w','x','z']]).
+
+escreveMatriz([]). 
+escreveMatriz([Cabeca|Cauda]) :- escreveLinha(Cabeca), 
+						nl,
+						escreveMatriz(Cauda).
+						
+/*Encerra a execucao*/				
+encerra:-
+	write("fim da execucao"),nl,nl.
+
+
+matriz([['a','b','c','d','e'],
+		['f','g','h','i','j'], 
+		['k','l','m','n','o'], 
+		['p','q','r','s','t'], 
+		['u','v','w','x','z']]).
 
 :- initialization main.
 
 main:-
 
-	/*read_line_to_codes(user_input, M),
-	string_to_atom(M,M2),
-	string_chars(M2,Mensagem),
-	retiraCaractereInvalido(' ',Mensagem,MensagemSemEspaco),
-	cauda(SemEspaco,Cauda),
-	cabeca(Cauda,CabecaCauda),
-	colocaX(CabecaCauda,SemEspaco,MensagemComX),*/
+main:-
+
+	write("Digite o numero da opcao"),nl,
+	write("1. Escolher uma tabela de cifra nova"),nl,
+	write("2. Introduzir uma mensagem para cifrar"),nl,
+	write("3. Ver a mensagem cifrada"),nl,
+	write("4. Decifrar mensagem"),nl,
+	write("5. Ver o alfabeto" ),nl,
+	write("6. Terminar\n" ),nl,
+	
 	encontraColuna('Y',4,R),
 
 	write(R).
