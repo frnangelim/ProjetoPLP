@@ -25,10 +25,15 @@ encontraLinha(E,[H|_],I,I) :- pertence(E,H).
 encontraLinha(E,[_|T],I,R) :- IX is I+1, encontraLinha(E,T,IX,R).
 /*Parametros: ELEMENTO,LINHA DA MATRIZ,INDICE,RESULTADO*/
 encontraColuna(E,[E|_],I,I).
-encontraColuna(E,[H|T],I,R) :- IX is I+1, encontraColuna(E,T,IX,R).
+encontraColuna(E,[_|T],I,R) :- IX is I+1, encontraColuna(E,T,IX,R).
+
+estaNaMesmaLinha(E,E1) :- matriz(_,M), encontraLinha(E,M,0,I),encontraLinha(E1,M,0,I1), I = I1.
+estaNaMesmaColuna(E,E1) :- matriz(_,M), encontraLinha(E,M,0,I),encontraLinha(E1,M,0,I1), 
+							getByIndice(I,M,0,L1),getByIndice(I1,M,0,L2),
+							encontraColuna(E,L1,0,J),encontraColuna(E1,L2,0,J1), J = J1.
 
 letraDeBaixo(E,R) :- matriz(_,M),encontraLinha(E,M,0,I),getByIndice(I,M,0,L),encontraColuna(E,L,0,J),IX is mod(I+1,4)-1, getByIndice(IX,M,0,LX), getByIndice(J,LX,0,R).
-/*letraDaDireita(E,R) :- matriz(_,M),encontraLinha(E,M,0,I),getByIndice(I,M,0,L),encontraColuna(E,L,0,J),IX is I+1, getByIndice(IX,M,0,LX), getByIndice(J,LX,0,R).*/
+letraDaDireita(E,R) :- matriz(_,M),encontraLinha(E,M,0,I),getByIndice(I,M,0,L),IX is mod(I+1,4)-1, getByIndice(IX,L,0,R).
 
 getByIndice(I,[E|_],I, E).
 getByIndice(I,[_|L],IA, R) :- getByIndice(I,L,IB,R), IA is IB-1.
