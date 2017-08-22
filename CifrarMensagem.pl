@@ -1,4 +1,4 @@
-3 ?- use_module(library(random)).
+?- use_module(library(random)).
 
 /* Tabela default, pesquisa por linha */
 linha(0,['Y','Q','D','L','G']).
@@ -20,11 +20,21 @@ matrizAleatoria(L,K) :- random_permutation(L,K).
 pertence(X,[X|_]).
 pertence(X,[_|Y]):- pertence(X,Y).
 
-getByIndice(I,[E|L],I, E).
-getByIndice(I,[_|L],IA, R) :- getByIndice(I,L,IA2,R), IA is IA2-1.
+/*Parametros: ELEMENTO,MATRIZ,INDICE,RESULTADO*/
+encontraLinha(E,[H|_],I,I) :- pertence(E,H).
+encontraLinha(E,[_|T],I,R) :- IX is I+1, encontraLinha(E,T,IX,R).
+/*Parametros: ELEMENTO,LINHA DA MATRIZ,INDICE,RESULTADO*/
+encontraColuna(E,[E|_],I,I).
+encontraColuna(E,[H|T],I,R) :- IX is I+1, encontraColuna(E,T,IX,R).
 
-cabeca([Cabeca|Cauda], Cauda).
-cauda([Cabeca|Cauda], Cauda).
+letraDeBaixo(E,R) :- matriz(_,M),encontraLinha(E,M,0,I),getByIndice(I,M,0,L),encontraColuna(E,L,0,J),IX is mod(I+1,4)-1, getByIndice(IX,M,0,LX), getByIndice(J,LX,0,R).
+/*letraDaDireita(E,R) :- matriz(_,M),encontraLinha(E,M,0,I),getByIndice(I,M,0,L),encontraColuna(E,L,0,J),IX is I+1, getByIndice(IX,M,0,LX), getByIndice(J,LX,0,R).*/
+
+getByIndice(I,[E|_],I, E).
+getByIndice(I,[_|L],IA, R) :- getByIndice(I,L,IB,R), IA is IB-1.
+
+cabeca([Cabeca|_], Cabeca).
+cauda([_|Cauda], Cauda).
 
 colocaX(Lista, [], [Lista]).
 colocaX(Lista, [Lista|Cauda], [Lista|['x'|S]]) :- colocaX(Lista,Cauda,S).
@@ -60,7 +70,7 @@ matriz(_,[['Y','Q','D','L','G'],
 		['O','S','K','R','E'], 
 		['T','H','N','A','I']]).
 
-execute(5) :- matriz(A,M), escreveMatriz(M).
+execute(5) :- matriz(_,M), escreveMatriz(M).
 execute(6) :- encerra.
 
 :- initialization main.
