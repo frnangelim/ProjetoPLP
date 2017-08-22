@@ -35,13 +35,16 @@ cifraMensagem([A,B|C],R):- estaNaMesmaLinha(A,B), letraDaDireita(A,AD), letraDaD
 cifraMensagem([A,B|C],R):- estaNaMesmaColuna(A,B),letraDeBaixo(A,AB), letraDeBaixo(B,BB), string_concat(AB,BB,X), cifraMensagem(C, R1), string_concat(X,R1, R2), R = R2.
 cifraMensagem([A,B|C],R):- correspondente(A,B,AC,BC), string_concat(AC,BC,X), cifraMensagem(C, R1), string_concat(X,R1, R2), R = R2.
 
-cabeca([Cabeca|_], Cabeca).
-cauda([_|Cauda], Cauda).
+cabeca([H|T], H).
+cauda([H|T], T).
 
-colocaX(Lista, [], [Lista]).
-colocaX(Lista, [Lista|Cauda], [Lista|['x'|S]]) :- colocaX(Lista,Cauda,S).
+colocaX(Lista, [], R) :- append([Lista], ['X'], LX), R = LX.
+colocaX(Lista, [Lista|Cauda], [Lista|['X'|S]]) :- colocaX(Lista,Cauda,S).
 colocaX(Lista, [Cabeca|Cauda], [Lista|S]) :- colocaX(Cabeca,Cauda,S).
 
+retiraEspaco(L, [] , []).
+retiraEspaco(L, [L|T], G):- retiraEspaco(L, T, G).
+retiraEspaco(L, [H|T] , [H|G]):- retiraEspaco(L, T, G).
 
 /*Funcaoo que retorna a matriz atual*/
 retornaMatriz:-
@@ -86,5 +89,16 @@ main:-
 	write("3. Escolher uma tabela de cifra nova"),nl,
 	write("4. Terminar\n" ),nl,
 	
-	read(L),
-	execute(L).
+	read_line_to_codes(user_input, M),
+	string_to_atom(M,M2),
+	string_chars(M2,Mensagem),
+	
+	retiraEspaco(' ', Mensagem, MensagemSemEspaco),
+	
+	cauda(MensagemSemEspaco, AuxCauda),
+	cabeca(MensagemSemEspaco, AuxCabeca),
+	
+	colocaX(AuxCabeca, AuxCauda, MensagemX),
+	write(MensagemX), nl.
+	
+	
