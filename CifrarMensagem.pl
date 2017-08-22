@@ -1,6 +1,5 @@
 3 ?- use_module(library(random)).
 
-
 /* Tabela default, pesquisa por linha */
 linha(0,['Y','Q','D','L','G']).
 linha(1,['M','J','X','F','U']).
@@ -16,41 +15,13 @@ coluna(4,['G','U','B','E','I']).
 
 /* Gerando uma Matriz Aleatoria*/
 matrizAleatoria(matriz,[]).
-matrizAleatoria L,K :- random_permutation(L,K). 
+matrizAleatoria(L,K) :- random_permutation(L,K). 
 
-
-% Verifica se um elemento pertence a uma lista.
 pertence(X,[X|_]).
 pertence(X,[_|Y]):- pertence(X,Y).
 
-% Encontra a linha de um elemento.
-% Xqn: Tou em dúvida de como fazer a 'condicao de parada', quando o
-% elemento não existe na tabela tá dando treta, anyway a gente só vai
-% usar pra elementos conhecidos.
-
-encontraLinha(E,0,0) :-	linha(0,L), pertence(E,L).
-encontraLinha(E,I,R) :- linha(I,L), pertence(E,L), R is I.
-encontraLinha(E,I,R) :- encontraLinha(E,I2,R), I is I2+1.
-%Encontra coluna de um elemento.
-encontraColuna(E,0,0) :- coluna(0,L), pertence(E,L).
-encontraColuna(E,I,R) :- coluna(I,L), pertence(E,L), R is I.
-encontraColuna(E,I,R) :- encontraColuna(E,I2,R), I is I2+1.
-
-
-/*Retorna a Funcao usando o busca elemento, cada linha eh contada considerando o elemento da matriz, cada elemento eh considerado uma linha.*/
-econtraLinha(matriz,[],ele,I).
-encontraLinha(matriz,[Cabeca|Cauda],ele,I) :- buscaElemento(Cabeca,ele,0) -> I; Cauda == [] -> 7; encontraLinha(Cauda,[],ele,I++).
-
-/*Busca o elemento na linha de elemento, tendo em vista que cada elemento da matriz e uma linha de elementos, 
-verificamos se um elemento (ele) esta na linha caso tiver retorna 1(True) or 0 (False)*/
-buscaElemento(CABECA,ele,I).
-buscaElemento(cabeca,[x|xy],I) :- ele == x -> 1 ; xy == [] -> I ; buscaElemento(xy,ele,0)
-
-
 getByIndice(I,[E|L],I, E).
 getByIndice(I,[_|L],IA, R) :- getByIndice(I,L,IA2,R), IA is IA2-1.
-
-letraDeBaixo(letra,R) :- encontraLinha(letra,4,I),encontraColuna(letra,4,J),linha(B,L),B is I+1, getByIndice(J,L,0,R).
 
 cabeca([Cabeca|Cauda], Cauda).
 cauda([Cabeca|Cauda], Cauda).
@@ -80,22 +51,22 @@ escreveMatriz([Cabeca|Cauda]) :- escreveLinha(Cabeca),
 						
 /*Encerra a execucao*/				
 encerra:-
-	write("fim da execucao"),nl,nl.
+	write("Fim da execução!"),nl,nl,halt(0).
 
 
-matriz([['a','b','c','d','e'],
-		['f','g','h','i','j'], 
-		['k','l','m','n','o'], 
-		['p','q','r','s','t'], 
-		['u','v','w','x','z']]).
+matriz(_,[['Y','Q','D','L','G'],
+		['M','J','X','F','U'], 
+		['V','W','C','P','B'], 
+		['O','S','K','R','E'], 
+		['T','H','N','A','I']]).
+
+execute(5) :- matriz(A,M), escreveMatriz(M).
+execute(6) :- encerra.
 
 :- initialization main.
-
 main:-
 
-main:-
-
-	write("Digite o numero da opcao"),nl,
+	write("Digite o numero da opcao:"),nl,
 	write("1. Escolher uma tabela de cifra nova"),nl,
 	write("2. Introduzir uma mensagem para cifrar"),nl,
 	write("3. Ver a mensagem cifrada"),nl,
@@ -103,6 +74,5 @@ main:-
 	write("5. Ver o alfabeto" ),nl,
 	write("6. Terminar\n" ),nl,
 	
-	encontraColuna('Y',4,R),
-
-	write(R).
+	read(L),
+	execute(L).
