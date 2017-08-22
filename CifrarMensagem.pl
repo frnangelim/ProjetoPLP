@@ -43,8 +43,11 @@ correspondente(E,E1,R,R1) :- matriz(_,M),encontraLinha(E,M,0,I),encontraLinha(E1
 getByIndice(I,[E|_],I, E).
 getByIndice(I,[_|L],IA, R) :- getByIndice(I,L,IB,R), IA is IB-1.
 
-cifraMensagem([],[]).
-/*cifraMensagem([A:B:XS],R):- estaNaMesmaLinha(A,B), letraDaDireita(A,AD), letraDaDireita(B,BD), string_concat(B,D,R).*/
+cifraMensagem([], '').
+cifraMensagem([A,B|C],R):- estaNaMesmaLinha(A,B), letraDaDireita(A,AD), letraDaDireita(B,BD), string_concat(AD,BD,X), cifraMensagem(C, R1), string_concat(X,R1, R2), R = R2.
+cifraMensagem([A,B|C],R):- estaNaMesmaColuna(A,B),letraDeBaixo(A,AB), letraDeBaixo(B,BB), string_concat(AB,BB,X), cifraMensagem(C, R1), string_concat(X,R1, R2), R = R2.
+cifraMensagem([A,B|C],R):- correspondente(A,B,AC,BC), string_concat(AC,BC,X), cifraMensagem(C, R1), string_concat(X,R1, R2), R = R2.
+
 
 
 cabeca([Cabeca|_], Cabeca).
