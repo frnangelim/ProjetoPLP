@@ -32,8 +32,8 @@ estaNaMesmaColuna(E,E1) :- matriz(_,M), encontraLinha(E,M,0,I),encontraLinha(E1,
 							getByIndice(I,M,0,L1),getByIndice(I1,M,0,L2),
 							encontraColuna(E,L1,0,J),encontraColuna(E1,L2,0,J1), J = J1.
 
-letraDeBaixo(E,R) :- matriz(_,M),encontraLinha(E,M,0,I),getByIndice(I,M,0,L),encontraColuna(E,L,0,J),IX is mod(I+1,4)-1, getByIndice(IX,M,0,LX), getByIndice(J,LX,0,R).
-letraDaDireita(E,R) :- matriz(_,M),encontraLinha(E,M,0,I),getByIndice(I,M,0,L),IX is mod(I+1,4)-1, getByIndice(IX,L,0,R).
+letraDeBaixo(E,R) :- matriz(_,M),encontraLinha(E,M,0,I),getByIndice(I,M,0,L),encontraColuna(E,L,0,J),IX is mod(I+1,5), getByIndice(IX,M,0,LX), getByIndice(J,LX,0,R).
+letraDaDireita(E,R) :- matriz(_,M),encontraLinha(E,M,0,I),getByIndice(I,M,0,L),encontraColuna(E,L,0,J),IJ is mod(J+1,5), getByIndice(IJ,L,0,R).
 
 correspondente(E,E1,R,R1) :- matriz(_,M),encontraLinha(E,M,0,I),encontraLinha(E1,M,0,I1),
 								getByIndice(I,M,0,L1),getByIndice(I1,M,0,L2),
@@ -42,6 +42,10 @@ correspondente(E,E1,R,R1) :- matriz(_,M),encontraLinha(E,M,0,I),encontraLinha(E1
 
 getByIndice(I,[E|_],I, E).
 getByIndice(I,[_|L],IA, R) :- getByIndice(I,L,IB,R), IA is IB-1.
+
+cifraMensagem([],[]).
+/*cifraMensagem([A:B:XS],R):- estaNaMesmaLinha(A,B), letraDaDireita(A,AD), letraDaDireita(B,BD), string_concat(B,D,R).*/
+
 
 cabeca([Cabeca|_], Cabeca).
 cauda([_|Cauda], Cauda).
@@ -84,6 +88,7 @@ execute(5) :- matriz(_,M), escreveMatriz(M).
 execute(6) :- encerra.
 
 :- initialization main.
+
 main:-
 
 	write("Digite o numero da opcao:"),nl,
