@@ -37,6 +37,16 @@ encontraColuna(E,I,R) :- coluna(I,L), pertence(E,L), R is I.
 encontraColuna(E,I,R) :- encontraColuna(E,I2,R), I is I2+1.
 
 
+/*Retorna a Funcao usando o busca elemento, cada linha eh contada considerando o elemento da matriz, cada elemento eh considerado uma linha.*/
+econtraLinha(matriz,[],ele,I).
+encontraLinha(matriz,[Cabeca|Cauda],ele,I) :- buscaElemento(Cabeca,ele,0) -> I; Cauda == [] -> 7; encontraLinha(Cauda,[],ele,I++).
+
+/*Busca o elemento na linha de elemento, tendo em vista que cada elemento da matriz e uma linha de elementos, 
+verificamos se um elemento (ele) esta na linha caso tiver retorna 1(True) or 0 (False)*/
+buscaElemento(CABECA,ele,I).
+buscaElemento(cabeca,[x|xy],I) :- ele == x -> 1 ; xy == [] -> I ; buscaElemento(xy,ele,0)
+
+
 getByIndice(I,[E|L],I, E).
 getByIndice(I,[_|L],IA, R) :- getByIndice(I,L,IA2,R), IA is IA2-1.
 
