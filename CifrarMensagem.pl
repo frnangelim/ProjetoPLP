@@ -47,12 +47,19 @@ cifraMensagem([],[]).
 /*cifraMensagem([A:B:XS],R):- estaNaMesmaLinha(A,B), letraDaDireita(A,AD), letraDaDireita(B,BD), string_concat(B,D,R).*/
 
 
-cabeca([Cabeca|_], Cabeca).
-cauda([_|Cauda], Cauda).
 
-colocaX(Lista, [], [Lista]).
-colocaX(Lista, [Lista|Cauda], [Lista|['x'|S]]) :- colocaX(Lista,Cauda,S).
+cabeca([H|T], H).
+cauda([H|T], T).
+
+
+colocaX(Lista, [], R) :- append([Lista], ['X'], LX), R = LX.
+colocaX(Lista, [Lista|Cauda], [Lista|['X'|S]]) :- colocaX(Lista,Cauda,S).
 colocaX(Lista, [Cabeca|Cauda], [Lista|S]) :- colocaX(Cabeca,Cauda,S).
+
+retiraEspaco(L, [] , []).
+retiraEspaco(L, [L|T], G):- retiraEspaco(L, T, G).
+retiraEspaco(L, [H|T] , [H|G]):- retiraEspaco(L, T, G).
+
 
 
 /*Funcaoo que retorna a matriz atual*/
@@ -99,5 +106,16 @@ main:-
 	write("5. Ver o alfabeto" ),nl,
 	write("6. Terminar\n" ),nl,
 	
-	read(L),
-	execute(L).
+	read_line_to_codes(user_input, M),
+	string_to_atom(M,M2),
+	string_chars(M2,Mensagem),
+	
+	retiraEspaco(' ', Mensagem, MensagemSemEspaco),
+	
+	cauda(MensagemSemEspaco, AuxCauda),
+	cabeca(MensagemSemEspaco, AuxCabeca),
+	
+	colocaX(AuxCabeca, AuxCauda, MensagemX),
+	write(MensagemX), nl.
+	
+	
