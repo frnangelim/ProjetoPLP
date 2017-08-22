@@ -1,18 +1,5 @@
 ?- use_module(library(random)).
 
-/* Tabela default, pesquisa por linha */
-linha(0,['Y','Q','D','L','G']).
-linha(1,['M','J','X','F','U']).
-linha(2,['V','W','C','P','B']).
-linha(3,['O','S','K','R','E']).
-linha(4,['T','H','N','A','I']).
-/* Tabela default, pesquisa por coluna */
-coluna(0,['Y','M','V','O','T']).
-coluna(1,['Q','J','W','S','H']).
-coluna(2,['D','X','C','K','N']).
-coluna(3,['L','F','P','R','A']).
-coluna(4,['G','U','B','E','I']).
-
 /* Gerando uma Matriz Aleatoria*/
 matrizAleatoria(matriz,[]).
 matrizAleatoria(L,K) :- random_permutation(L,K). 
@@ -48,8 +35,6 @@ cifraMensagem([A,B|C],R):- estaNaMesmaLinha(A,B), letraDaDireita(A,AD), letraDaD
 cifraMensagem([A,B|C],R):- estaNaMesmaColuna(A,B),letraDeBaixo(A,AB), letraDeBaixo(B,BB), string_concat(AB,BB,X), cifraMensagem(C, R1), string_concat(X,R1, R2), R = R2.
 cifraMensagem([A,B|C],R):- correspondente(A,B,AC,BC), string_concat(AC,BC,X), cifraMensagem(C, R1), string_concat(X,R1, R2), R = R2.
 
-
-
 cabeca([Cabeca|_], Cabeca).
 cauda([_|Cauda], Cauda).
 
@@ -78,7 +63,7 @@ escreveMatriz([Cabeca|Cauda]) :- escreveLinha(Cabeca),
 						
 /*Encerra a execucao*/				
 encerra:-
-	write("Fim da execução!"),nl,nl,halt(0).
+	write("Fim da execucao!"),nl,nl,halt(0).
 
 
 matriz(_,[['Y','Q','D','L','G'],
@@ -87,20 +72,19 @@ matriz(_,[['Y','Q','D','L','G'],
 		['O','S','K','R','E'], 
 		['T','H','N','A','I']]).
 
-execute(5) :- matriz(_,M), escreveMatriz(M).
-execute(6) :- encerra.
+execute(1) :- read(X),write(X),main. /* Preparar e cifrar mensagem */
+execute(2) :- matriz(_,M), escreveMatriz(M),main.
+execute(3) :- matriz(_,M), matrizAleatoria(M,M1), escreveMatriz(M1),main.
+execute(4) :- encerra,main.
 
 :- initialization main.
 
 main:-
-
 	write("Digite o numero da opcao:"),nl,
-	write("1. Escolher uma tabela de cifra nova"),nl,
-	write("2. Introduzir uma mensagem para cifrar"),nl,
-	write("3. Ver a mensagem cifrada"),nl,
-	write("4. Decifrar mensagem"),nl,
-	write("5. Ver o alfabeto" ),nl,
-	write("6. Terminar\n" ),nl,
+	write("1. Introduzir uma mensagem para cifrar"),nl,
+	write("2. Ver o alfabeto"),nl,
+	write("3. Escolher uma tabela de cifra nova"),nl,
+	write("4. Terminar\n" ),nl,
 	
 	read(L),
 	execute(L).
